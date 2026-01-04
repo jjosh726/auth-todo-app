@@ -1,0 +1,36 @@
+{
+  "name": "auth-todo-app",
+  "version": "1.0.0",
+  "description": "Basic todo app with authentication",
+  "keywords": [
+    "Auth",
+    "Todo",
+    "App"
+  ],
+  "homepage": "https://github.com/jjosh726/auth-todo-app#readme",
+  "bugs": {
+    "url": "https://github.com/jjosh726/auth-todo-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jjosh726/auth-todo-app.git"
+  },
+  "license": "ISC",
+  "author": "jjosh726",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
