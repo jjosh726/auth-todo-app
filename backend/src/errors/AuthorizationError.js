@@ -1,8 +1,8 @@
-import { AppError } from "./AppError";
+import { AppError } from "./AppError.js";
 
 export class AuthorizationError extends AppError {
     constructor() {
-        super("Access denied.", 401);
+        super("Access denied.", 403);
     }
 }
 

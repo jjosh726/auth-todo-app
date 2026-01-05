@@ -15,9 +15,11 @@ app.use(express.json());
 
 // routers
 import userRouter from "./routes/user.route.js";
+import { errorHandler } from "./middlewares/errorHandler.js";
 
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/auth', userRouter);
 
 // error handling
+app.use(errorHandler);
 
 export default app;
