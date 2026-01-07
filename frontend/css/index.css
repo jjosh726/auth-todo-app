@@ -1,21 +1,517 @@
-* {
-    box-sizing: content-box;
-    margin: 0;
-    padding: 0;
-
-    font-family: 'Roboto';
-    font-weight: bold;
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-}
-
 nav {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
 
+    padding: 0.5em 1em;
+    background-color: var(--grey-1);
+    
+    border-bottom: 0.15em solid var(--grey-2);
+    width: 100vw;
+    font-weight: bold;
+}
+
+nav > div {
+    width: 33%;
+    font-size: large;
+}
+
+.nav-center {
+    font-size: xx-large;
+}
+
+.nav-left {
+    text-align: left;
+}
+
+.nav-center {
+    text-align: center;
+}
+
+.nav-right {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+}
+
+.main {
+    display: flex;
+    flex: 1;
+}
+
+aside {
+    width: 20vw;
+    background-color: var(--grey-1);
+    margin: 1em;
     padding: 1em;
+    border-radius: 1em;
+    
+    /* box-shadow: 0 0 0.5em var(--grey-2); */
+    
+    /* border-right: 0.15em solid var(--grey-2); */
+}
+
+h4 {
+    font-family: 'Rubik';
+    color: var(--text-secondary);
+    margin-bottom: 1.2em;
+}
+
+aside svg {
+    fill : var(--text-secondary);
+    width: 1.4em;
+    height: 1.4em;
+}
+
+aside > div {
+    margin-bottom: 3em;
+}
+
+
+.task-list {
+    width: 50%;
+}
+
+.task-categories, .list-categories {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4em;
+    font-weight: normal;
+}
+
+.category {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.2em 0.5em;
+    border-radius: 0.3em;
+    
+    transition: .1s ease;
+
+    & div {
+        display: flex;
+        align-items: center;
+        font-size: larger;
+        
+        font-weight: 500;
+        color: var(--text-secondary);
+        gap: 0.5em;
+    }
+
+    & > div:last-of-type {
+        background-color: var(--grey-2);
+        font-size: medium;
+        padding: 0.2em 0.7em;
+        border-radius: 0.3em;
+    }
+}
+
+.create-new-list {
+    display: flex;
+    align-items: center;
+    padding: 0.2em 0.5em;
+    border-radius: 0.3em;
+
+    display: flex;
+    align-items: center;
+    font-size: larger;
+    
+    font-weight: 500;
+    color: var(--text-tertiary);
+    gap: 0.5em;
+
+    transition: .2s ease;
+
+    & svg {
+        fill : var(--text-secondary);
+        width: 1.55em;
+        height: 1.55em;
+    }
+}
+
+.create-new-list:hover {
+    /* font-weight: bold;
+    letter-spacing: -0.08em; */
+    color: var(--text-primary);
+    background-color: var(--grey-2);
+
+    & svg {
+        fill: var(--text-primary);
+    }
+}
+
+.category:hover {
+    background-color: var(--grey-2);
+    
+    & div {
+        /* font-weight: bold;
+        letter-spacing: -0.08em; */
+        color: var(--text-primary);
+    }
+
+    & > div:last-of-type {
+        background-color: var(--grey-1);
+    }
+
+    & svg {
+        fill: var(--text-primary);
+    }
+
+}
+
+.col {
+    width: 1.4em;
+    height: 1.4em;
+
+
+    & div {
+        width: 50%;
+        height: 50%;
+        margin: auto;
+
+        
+        border-radius: 0.2em;
+        background-color: var(--info);
+    }
+}
+
+section {
+    width: 80vw;
+    padding: 1em;
+    border-radius: 1em;
+
+    display: flex;
+    flex-direction: row;
+    gap: 1em;
+
+    & h1 {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+    }
+}
+
+.num {
+    background-color: var(--grey-2);
+    padding: 0.2em 0.7em 0.2em 0.6em;
+    border-radius: 0.3em;
+}
+
+.tasks-actions {
+    margin-top: 1em;
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+.add-new, .filter {
+    display: flex;
+    gap: 0.2em;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.2em 0.5em;
+    border-radius: 0.3em;
+    
+    transition: .1s ease;
+
+    & svg {
+        fill : var(--text-secondary);
+        width: 1.5em;
+        height: 1.5em;
+    }
+
+    & div {
+        display: flex;
+        align-items: center;
+        font-size: larger;
+        
+        font-weight: 500;
+        color: var(--text-secondary);
+        gap: 0.5em;
+    }
+}
+
+.add-new:hover, .filter:hover {
+    background-color: var(--grey-2);
+    
+    & div {
+        color: var(--text-primary);
+    }
+
+    & svg {
+        fill: var(--text-primary);
+    }
+
+}
+
+.search {
+    display: flex;
+    align-items: center;
+
+    border: 0.15em solid var(--grey-2);;
+    border-radius: 0.5em;
+    padding: 0.5em;
+
+    & button {
+        background-color: transparent;
+        border: none;
+    }
+
+    & svg {
+        fill : var(--text-secondary);
+        width: 1.5em;
+        height: 1.5em;
+    }
+
+    & input {
+        flex: 1;
+        font-size: larger;
+        
+        font-weight: 500;
+        color: var(--text-tertiary);
+        gap: 0.5em;
+
+        border: none;
+        outline: none;
+        padding-left: 0.2em;
+    }
+}
+
+.tasks {
+    margin-top: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.task, .subtask {
+    display: flex;
+    background-color: var(--grey-1);
+    padding: 0.5em;
+
+    border-radius: 0.3em;
+
+    justify-content: space-between;
+
+    & svg {
+        fill: var(--text-secondary);
+    }
+}
+
+.task > div, .subtask > div {
+    display: flex;
+    align-items: center;
+    font-size: larger;
+    
+    font-weight: 500;
+    color: var(--text-secondary);
+    gap: 0.5em;
+}
+
+.list-col {
+    background-color: gold;
+    width: 0.2em;
+    /* height: 100%; */
+    
+    align-self: stretch;
+    
+    border-radius: 0.3em;
+}
+
+.date {
+    font-size: medium;
+    font-weight: bold;
+
+    color: var(--text-tertiary);
+    padding: 0.2em 0.7em;
+    background-color: var(--grey-2);
+
+    border-radius: 0.5em;
+}
+
+h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.2em;
+
+    margin: 0.2em;
+
+    font-weight: normal;
+    font-size: medium;
+    color: var(--text-tertiary);
+
+    & svg {
+        width: 1.3em;
+        height: 1.3em;
+        fill: var(--text-tertiary);
+    }
+}
+
+.subtasks-container {
+    margin-left: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+}
+
+article {
+    width: 50%;
+
+    background-color: var(--grey-1);
+    padding: 2em;
+    border-radius: 1em;
+
+    & hr {
+        margin: 0.8em 0;
+        height: 0.1em;
+        opacity: 0.5;
+        /* border: none; */
+        background-color: var(--text-tertiary);
+    }
+}
+
+.description {
+    font-weight: 500;
+    color: var(--text-tertiary);
+    opacity: 0.8;
+
+    text-align: justify;
+}
+
+.task-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+.task-options label {
+    font-weight: bold;
+}
+
+.task-options > div {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+}
+
+select,
+::picker(select) {
+  appearance: base-select;
+}
+
+select {
+  border: 2px solid #dddddd;
+  background: #eeeeee;
+  padding: 10px;
+  transition: 0.4s;
+}
+
+select:hover,
+select:focus {
+  background: #dddddd;
+}
+
+select::picker-icon {
+  color: #999999;
+  transition: 0.4s rotate;
+}
+
+select:open::picker-icon {
+  rotate: 180deg;
+}
+
+::picker(select) {
+  border: none;
+}
+
+option {
+  display: flex;
+  justify-content: flex-start;
+  gap: 20px;
+
+  border: 2px solid #dddddd;
+  background: #eeeeee;
+  padding: 10px;
+  transition: 0.4s;
+}
+
+option:first-of-type {
+  border-radius: 8px 8px 0 0;
+}
+
+option:last-of-type {
+  border-radius: 0 0 8px 8px;
+}
+
+::picker(select) {
+  border-radius: 8px;
+}
+
+option:not(option:last-of-type) {
+  border-bottom: none;
+}
+
+option:nth-of-type(odd) {
+  background: white;
+}
+
+option:hover,
+option:focus {
+  background: plum;
+}
+
+option .icon {
+  font-size: 1.6rem;
+  text-box: trim-both cap alphabetic;
+}
+
+selectedcontent .icon {
+  display: none;
+}
+
+option:checked {
+  font-weight: bold;
+}
+
+option::checkmark {
+  order: 1;
+  margin-left: auto;
+  content: "☑️";
+}
+
+::picker(select) {
+  opacity: 0;
+  transition: all 0.4s allow-discrete;
+}
+
+::picker(select):popover-open {
+  opacity: 1;
+}
+
+@starting-style {
+  ::picker(select):popover-open {
+    opacity: 0;
+  }
+}
+
+::picker(select) {
+  top: calc(anchor(bottom) + 1px);
+  left: anchor(10%);
+}
+
+
+input[type="date"] {
+  border: 2px solid #dddddd;
+  border-radius: 0.5em;
+  background: #eeeeee;
+  padding: 10px;
+  transition: 0.4s;
+  outline: none;
+}
+
+input[type="date"]:hover,
+input[type="date"]:focus {
+  background: #dddddd;
 }
