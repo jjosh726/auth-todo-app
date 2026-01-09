@@ -32,8 +32,30 @@ nav > div {
 .nav-right {
     text-align: right;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
     gap: 1em;
+}
+
+.nav-right div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.5em;
+
+    padding: 0.2em;
+    border-radius: 0.3em;
+
+    transition: .2s ease;
+
+    & svg {
+        fill: var(--text-primary);
+    }
+
+    &:hover {
+        background-color: var(--grey-2);
+    }
 }
 
 .main {
@@ -108,7 +130,7 @@ aside > div {
     }
 }
 
-.create-new-list {
+.create-new-list ,.create-new-subtask {
     display: flex;
     align-items: center;
     padding: 0.2em 0.5em;
@@ -131,7 +153,7 @@ aside > div {
     }
 }
 
-.create-new-list:hover {
+.create-new-list:hover ,.create-new-subtask:hover {
     /* font-weight: bold;
     letter-spacing: -0.08em; */
     color: var(--text-primary);
@@ -312,12 +334,25 @@ section {
 
 .list-col {
     background-color: gold;
-    width: 0.2em;
+    padding: 0 0.2em;
     /* height: 100%; */
     
-    align-self: stretch;
+    /* align-self: stretch; */
     
     border-radius: 0.3em;
+
+}
+
+.list-col input[type="checkbox"] {
+    outline: none;
+    box-shadow: none;
+    /* appearance: none; */
+
+    accent-color: gold;
+}
+
+.list-col input[type="checkbox"]:focus-visible {
+    outline: none;
 }
 
 .date {
@@ -356,6 +391,16 @@ h3 {
     gap: 0.3em;
 }
 
+
+.task svg, .subtask svg {
+    border-radius: 0.2em;
+    transition: .2s ease;
+}
+
+.task svg:hover, .subtask svg:hover {
+    background-color: var(--grey-2);
+}
+
 article {
     width: 50%;
 
@@ -363,12 +408,35 @@ article {
     padding: 2em;
     border-radius: 1em;
 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     & hr {
         margin: 0.8em 0;
         height: 0.1em;
         opacity: 0.5;
         /* border: none; */
         background-color: var(--text-tertiary);
+    }
+}
+
+.task-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.close-task-button {
+    border-radius: 0.3em;
+    transition: .2s ease;
+
+    &:hover {
+        background-color: var(--grey-2);
+    }
+
+    & svg {
+        fill: var(--text-primary);
     }
 }
 
@@ -514,4 +582,106 @@ input[type="date"] {
 input[type="date"]:hover,
 input[type="date"]:focus {
   background: #dddddd;
+}
+
+.edit-subtasks-container {
+    margin-top: 0.2em;
+}
+
+
+.new-subtasks > div {
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    padding: 0.2em 0.5em;
+    border-radius: 0.3em;
+
+    font-weight: 500;
+    font-size: large;
+    color: var(--text-secondary);
+
+    transition: .1s ease;
+
+    & div {
+        display: flex;
+        align-items: center;
+        font-size: larger;
+        
+        font-weight: 500;
+        color: var(--text-secondary);
+        gap: 0.5em;
+    }
+}
+
+
+.new-subtasks > div:hover {
+    background-color: var(--grey-2);
+    
+    & div {
+        /* font-weight: bold;
+        letter-spacing: -0.08em; */
+        color: var(--text-primary);
+    }
+/* 
+    & > div:last-of-type {
+        background-color: var(--grey-1);
+    }
+
+    & svg {
+        fill: var(--text-primary);
+    } */
+
+}
+
+
+.bul {
+    width: 1.4em;
+    height: 1.4em;
+    margin-right: 0.5em;
+
+    & div {
+        width: 50%;
+        height: 50%;
+        margin: auto;
+
+        
+        border-radius: 0.5em;
+        border: 0.1em solid var(--text-primary);
+    }
+}
+
+.task-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+
+    & button {
+        padding: 1em;
+        font-weight: bold;
+        /* border: none; */
+        /* background-color: transparent; */
+        font-size: larger;
+        border-radius: 0.5em;
+
+        transition: .1s ease;
+    }
+}
+
+.delete-task {
+    border: solid 0.2em var(--danger);
+
+    &:hover {
+        background-color: var(--danger);
+        color: white;
+    }
+}
+
+.save-task-changes {
+    border: solid 0.2em var(--success);
+    background-color: var(--success);
+
+    &:hover {
+        color: white;
+    }
 }
