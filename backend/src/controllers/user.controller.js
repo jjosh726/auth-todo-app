@@ -63,8 +63,33 @@ const login = async (req, res, next) => {
     }
 }
 
+const me = async (req, res, next) => {
+    try {
+        const userId = req.userId;
+
+        const user = await User.findById(userId);
+
+        if (!user) throw new UserNotFoundError();
+
+        res.status(200).json({
+            message : "User found.",
+            user : {
+                id : user._id,
+                username : user.username,
+                email : user.email,
+                createdAt : user.createdAt,
+                updatedAt : user.updatedAt
+            }
+        })
+
+    } catch (err) {
+        next(err);
+    }
+}
+
 
 export {
     register,
-    login
+    login,
+    me
 }
