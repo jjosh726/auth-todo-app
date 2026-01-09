@@ -69,6 +69,8 @@ aside {
     margin: 1em;
     padding: 1em;
     border-radius: 1em;
+/* 
+    height: 100%; */
     
     /* box-shadow: 0 0 0.5em var(--grey-2); */
     
@@ -89,11 +91,6 @@ aside svg {
 
 aside > div {
     margin-bottom: 3em;
-}
-
-
-.task-list {
-    width: 50%;
 }
 
 .task-categories, .list-categories {
@@ -204,8 +201,12 @@ section {
     padding: 1em;
     border-radius: 1em;
 
-    display: flex;
-    flex-direction: row;
+    display: grid;
+    grid-template-columns: 1fr 50em;
+    transition: grid-template-columns .5s ease;
+
+    height: 100%;
+    
     gap: 1em;
 
     & h1 {
@@ -213,6 +214,16 @@ section {
         align-items: center;
         gap: 0.5em;
     }
+}
+
+section.is-closed {
+    grid-template-columns: 1fr 0px;
+}
+
+section.is-closed article {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
 }
 
 .num {
@@ -237,6 +248,9 @@ section {
     border-radius: 0.3em;
     
     transition: .1s ease;
+
+    border: none;
+    font-size: large;
 
     & svg {
         fill : var(--text-secondary);
@@ -402,8 +416,6 @@ h3 {
 }
 
 article {
-    width: 50%;
-
     background-color: var(--grey-1);
     padding: 2em;
     border-radius: 1em;
@@ -412,12 +424,24 @@ article {
     flex-direction: column;
     justify-content: space-between;
 
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 0.3s ease, opacity 0.2s ease;
+
+    min-width: 0;
+    overflow: hidden;
+
     & hr {
         margin: 0.8em 0;
         height: 0.1em;
         opacity: 0.5;
         /* border: none; */
         background-color: var(--text-tertiary);
+    }
+
+    & .description {
+        overflow-y: auto;
+        max-height: 15vh;
     }
 }
 
