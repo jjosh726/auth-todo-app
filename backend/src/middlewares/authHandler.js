@@ -1,12 +1,13 @@
 import jwt from "jsonwebtoken";
-import { AuthorizationError, ServerAuthError } from "../errors/AuthorizationError.js";
+import { ServerAuthError } from "../errors/AuthorizationError.js";
+import { AuthenticationError } from "../errors/AuthenticationError.js";
 
 export const verifyToken = (req, res, next) => {
     try {
         //  Bearer <TokenName>
         const headerAuthText = req.headers.authorization;
         
-        if (!headerAuthText) throw new AuthorizationError();
+        if (!headerAuthText) throw new AuthenticationError();
 
         const headerAuthList = headerAuthText.split(' ');
     

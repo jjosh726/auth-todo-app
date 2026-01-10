@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
-import { UserNotFoundError } from "../errors/userNotFound.js";
+import { UserNotFoundError } from "../errors/NotFound.js";
 import { AuthenticationError } from "../errors/AuthenticationError.js";
 
 const register = async (req, res, next) => {
