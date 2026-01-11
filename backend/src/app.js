@@ -18,9 +18,11 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 
 import userRouter from "./routes/user.route.js";
 import taskRouter from "./routes/task.route.js";
+import subtaskRouter from "./routes/subtask.route.js";
 
 app.use('/api/v1/auth', userRouter);
 app.use('/api/v1/task', taskRouter);
+app.use('/api/v1/task/:taskId/subtask', subtaskRouter);
 
 // error handling
 app.use(errorHandler);

@@ -23,3 +23,5 @@ const subtaskSchema = new Schema(
         timestamps : true
     }
 );
+
+export const Subtask = mongoose.model("Subtask", subtaskSchema);

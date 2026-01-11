@@ -11,3 +11,9 @@ export class TaskNotFoundError extends AppError {
         super("Task not found.", 404);
     }
 }
+
+export class SubtaskNotFoundError extends AppError {
+    constructor() {
+        super("Subtask not found.", 404);
+    }
+}
