@@ -19,10 +19,12 @@ import { errorHandler } from "./middlewares/errorHandler.js";
 import userRouter from "./routes/user.route.js";
 import taskRouter from "./routes/task.route.js";
 import subtaskRouter from "./routes/subtask.route.js";
+import listRouter from "./routes/list.route.js";
 
 app.use('/api/v1/auth', userRouter);
 app.use('/api/v1/task', taskRouter);
 app.use('/api/v1/task/:taskId/subtask', subtaskRouter);
+app.use('/api/v1/list', listRouter);
 
 // error handling
 app.use(errorHandler);
