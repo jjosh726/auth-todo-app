@@ -54,11 +54,23 @@ const getListById = async (req, res, next) => {
         const listId = req.params.id;
         const userId = req.userId;
 
-        const list = await List.findOne({
+        console.log(req.query);
+
+        let listQuery = List.findOne({
             _id : listId,
             userId
         });
 
+        const { include } = req.query;
+        if (include && include.includes("tasks")) {
+            // populate the virtual field
+            listQuery = listQuery.populate({
+                path : 'tasks',
+                populate : include.includes("subtasks") ? { path : 'subtasks' } : null
+            });
+        }
+
+        const list = await listQuery.exec();
         if (!list) throw new ListNotFoundError();
 
         return res.status(200).json({

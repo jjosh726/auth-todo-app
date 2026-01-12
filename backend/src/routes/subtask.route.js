@@ -9,15 +9,16 @@ import {
 import { verifyToken } from "../middlewares/authHandler.js";
 import { authorizeTask } from "../middlewares/taskAuthHandler.js";
 
-const subtaskRouter = new Router();
+// allow subtaskRouter to access more than one parameter with mergeParaams
+const subtaskRouter = new Router({ mergeParams : true });
 
 subtaskRouter.use(verifyToken, authorizeTask);
 
 // POST create new subtask
-subtaskRouter.post('', createSubtask);
+subtaskRouter.post('/', createSubtask);
 
 // GET all subtasks for a task
-subtaskRouter.get('', getAllSubtasksForTask);
+subtaskRouter.get('/', getAllSubtasksForTask);
 
 // GET specific subtask
 subtaskRouter.get('/:subtaskId', getSubtask);

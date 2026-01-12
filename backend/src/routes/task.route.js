@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { verifyToken } from "../middlewares/authHandler.js";
 import { createTask, deleteTask, getTaskById, getTasks, updateTask } from "../controllers/task.controller.js";
+import { authorizeList } from "../middlewares/listAuthHandler.js";
 
 const taskRouter = new Router();
 
@@ -16,13 +17,13 @@ taskRouter.get('/', getTasks);
 taskRouter.get('/:id', getTaskById)
 
 // POST create new task
-taskRouter.post('/', createTask);
+taskRouter.post('/', authorizeList, createTask);
 
 // PUT change task by id
-taskRouter.put('/:id', updateTask);
+taskRouter.put('/:id', authorizeList, updateTask);
 
 // DELETE a task by id
-taskRouter.delete('/:id', deleteTask);
+taskRouter.delete('/:id', authorizeList, deleteTask);
 
 // PUT -> CHANGE ENTIRE RESOURCE
 // PATCH -> UPDATE PART OF RESOURCE

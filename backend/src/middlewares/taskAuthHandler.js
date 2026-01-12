@@ -6,7 +6,9 @@ const authorizeTask = async (req, res, next) => {
         const taskId = req.params.taskId;
         const userId = req.userId;
 
-        const task = await findOne({ _id : taskId, userId });
+        // console.log(req.params);
+
+        const task = await Task.findOne({ _id : taskId, userId });
 
         if (!task) throw new TaskNotFoundError();
 

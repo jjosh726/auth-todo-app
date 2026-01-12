@@ -31,7 +31,16 @@ const getTaskById = async (req, res, next) => {
         const taskId = req.params.id;
         const userId = req.userId;
 
-        const task = await Task.findById(taskId);
+        let taskQuery = Task.findById(taskId);
+
+        const { include } = req.query;
+        if (include && include.includes("subtasks")) {
+            taskQuery = taskQuery.populate({
+                path : "subtasks"
+            });
+        }
+
+        const task = await taskQuery.exec();
 
         if (!task) throw new TaskNotFoundError();
         if (!task.userId.equals(userId)) throw new AuthorizationError();
