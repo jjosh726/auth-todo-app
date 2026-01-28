@@ -4,29 +4,48 @@ import { AuthenticationError } from "../errors/AuthenticationError.js";
 
 export const verifyToken = (req, res, next) => {
     try {
-        //  Bearer <TokenName>
-        const headerAuthText = req.headers.authorization;
-        
-        if (!headerAuthText) throw new AuthenticationError();
+        const accessToken = req.cookies.access_token;
 
-        const headerAuthList = headerAuthText.split(' ');
-    
-        if (headerAuthList[0].toLowerCase() != "bearer") throw new ServerAuthError();
-
-        const token = headerAuthList[1];
-
-        // return the payload
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-        // check if payload has userId
-        if ("userId" in decoded) {
-            req.userId = decoded.userId;
-        } else {
-            throw new ServerAuthError();
+        if (!accessToken) {
+            return tryRefresh(req, res, next);
         }
 
+        // return the payload
+        const decoded = jwt.verify(accessToken, process.env.JWT_SECRET);
+
+        req.userId = decoded.userId;
         next();
     } catch (err) {
-        next(err);
+        return tryRefresh(req, res, next);
+    }
+}
+
+const tryRefresh = (req, res, next) => {
+    const refreshToken = req.cookies.refresh_token;
+
+    if (!refreshToken) throw new AuthenticationError();
+
+    try {
+        const payload = jwt.verify(refreshToken, process.env.REFRESH_SECRET);
+
+        // create new access token
+        const accessToken = jwt.sign(
+            { userId : payload.userId },
+            process.env.JWT_SECRET,
+            { expiresIn : process.env.JWT_EXPIRATION }
+        );
+
+        res.cookie("access_token", accessToken, {
+            httpOnly : true,
+            secure : process.env.NODE_ENV === 'production',
+            sameSite : "strict",
+            path : "/",
+            maxAge : 60 * 60 * 1000
+        });
+
+        req.userId = payload.userId;
+        next();
+    } catch (err) {
+        throw new AuthenticationError();
     }
 }

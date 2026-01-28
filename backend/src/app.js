@@ -1,6 +1,9 @@
 import express from "express";
 import url, { fileURLToPath } from "url";
 import path, { dirname } from "path";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
 
 const app = express();
 
@@ -12,6 +15,13 @@ app.use(express.static(path.join(__dirname, 'frontend')));
 
 // parse body
 app.use(express.json());
+app.use(cookieParser());
+
+// CORS controls which frontend origin can call your backend
+app.use(cors({
+  origin: "http://localhost:" + process.env.PORT,
+  credentials: true
+}))
 
 // routers
 import { errorHandler } from "./middlewares/errorHandler.js";
@@ -30,5 +40,3 @@ app.use('/api/v1/list', listRouter);
 app.use(errorHandler);
 
 export default app;
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTViNTM0ZWMzOGQwZmMwMjcxMTA2NjYiLCJpYXQiOjE3NjgwNjY2OTcsImV4cCI6MTc2ODA3MDI5N30.ncshR_c_M4qDP-SFhigyAXR0IV5iH6qhCHpexj8_rC4

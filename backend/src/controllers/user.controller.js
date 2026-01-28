@@ -39,7 +39,7 @@ const login = async (req, res, next) => {
         // find user by email
         const user = await User.findOne({ email : email.toLowerCase() });
 
-        console.log(user);
+        // console.log(user);
 
         if (!user) throw new UserNotFoundError();
 
@@ -53,11 +53,41 @@ const login = async (req, res, next) => {
             { expiresIn : process.env.JWT_EXPIRATION}
         )
 
-        res.status(200).json({
-            message : "User logged in successfully.",
-            token 
+        const refreshToken = jwt.sign(
+            { userId : user._id },
+            process.env.REFRESH_SECRET,
+            { expiresIn : process.env.REFRESH_EXPIRATION }
+        )
+
+        res.cookie("access_token", token, {
+            httpOnly: true,
+            secure : process.env.NODE_ENV === 'production',
+            sameSite : "lax",
+            path : "/",
+            maxAge : 60 * 60 * 1000
         });
 
+        res.cookie("refresh_token", refreshToken, {
+            httpOnly : true,
+            secure : process.env.NODE_ENV === 'production',
+            sameSite : "lax",
+            path : "/",
+            maxAge : 1000 * 60 * 60 * 24 * 7
+        });
+
+        res.status(200).json({
+            message : "User logged in successfully.",
+        });
+
+    } catch (err) {
+        next(err);
+    }
+}
+
+const logout = async (req, res, next) => {
+    try {
+        res.clearCookie("access_token");
+        res.clearCookie("refresh_token");
     } catch (err) {
         next(err);
     }
@@ -91,5 +121,6 @@ const me = async (req, res, next) => {
 export {
     register,
     login,
+    logout,
     me
 }

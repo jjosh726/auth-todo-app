@@ -5,6 +5,8 @@ import { Subtask } from "../models/subtask.model.js";
 // POST create new subtask
 const createSubtask = async (req, res, next) => {
     try {
+        if (!req.body) throw new EmptyRequestError();
+
         const { title } = req.body;
         const taskId = req.params.taskId;
 

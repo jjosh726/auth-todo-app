@@ -1,3 +1,4 @@
+import { ListAlreadyExistsError } from "../errors/AlreadyExistsError.js";
 import { EmptyRequestError } from "../errors/EmptyError.js";
 import { ListNotFoundError } from "../errors/NotFound.js";
 import { List } from "../models/list.model.js";
@@ -9,6 +10,9 @@ const createList = async (req, res, next) => {
         const { name } = req.body;
 
         if (!name) throw new EmptyRequestError();
+
+        const existingList = await List.findOne({ userId, name });
+        if (existingList) throw new ListAlreadyExistsError();
 
         const list = await List.create({
             name,

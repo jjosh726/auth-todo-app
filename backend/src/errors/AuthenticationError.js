@@ -2,6 +2,6 @@ import { AppError } from "./AppError.js";
 
 export class AuthenticationError extends AppError {
     constructor() {
-        super("Invalid Credentials.", 401);
+        super("Invalid credentials.", 401);
     }
 }

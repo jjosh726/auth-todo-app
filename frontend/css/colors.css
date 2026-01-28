@@ -2,7 +2,6 @@
     --dark-grey: #697683;
     --light-grey: #738290;
     --powder-blue: #a1b5d8;
-
     
     --light-green: #e4f0d0;
     --tea-green: #c2d8b9;
@@ -21,7 +20,7 @@
     --warning: #f7bd40;
 
     --info-light: #9dbdf8;
-    --success-light: #b2ecb7;
-    --danger-light: #f38888;
+    --success-light: #cffad3;
+    --danger-light: #fcaeae;
     --warning-light: #fce2ac;
 }
