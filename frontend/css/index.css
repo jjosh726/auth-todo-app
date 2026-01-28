@@ -12,6 +12,10 @@ aside {
     /* border-right: 0.15em solid var(--grey-2); */
 }
 
+.nav-right a.is-invisible {
+    display: none;
+}
+
 h4 {
     font-family: 'Rubik';
     color: var(--text-secondary);
@@ -642,5 +646,62 @@ input[type="date"]:focus {
 
     &:hover {
         color: white;
+    }
+}
+
+.popup {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+
+    margin: 1em;
+
+    width: 18em;
+
+    font-weight: bold;
+    padding: 0.8em 1em;
+    text-align: center;
+    
+    border-radius: 0.5em;
+
+    & .exit {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0.2em;
+    }
+
+    & button {
+        background: none;
+        border: none;
+
+        border-radius: 0.2em;
+    }
+}
+
+
+.popup.danger {
+    background-color: var(--danger-light);
+    border: 0.15em solid var(--danger);
+
+    & div {
+        color: var(--danger);
+
+        & svg {
+            fill: var(--danger);
+        }
+    }
+}
+
+.popup.success {
+    background-color: var(--success-light);
+    border: 0.15em solid var(--success);
+    
+    & div {
+        color: var(--success);
+
+        & svg {
+            fill: var(--success);
+        }
     }
 }

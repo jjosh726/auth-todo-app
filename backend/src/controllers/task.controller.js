@@ -7,7 +7,16 @@ const getTasks = async (req, res, next) => {
     try {
         const userId = req.userId;
 
-        const tasks = await Task.find({ userId : userId });
+        let tasksQuery = Task.find({ userId : userId });
+
+        const { include } = req.query;
+        if (include && include.includes("subtasks")) {
+            tasksQuery = tasksQuery.populate({
+                path : "subtasks"
+            });
+        }
+
+        const tasks = await tasksQuery.exec();
 
         if (tasks.length === 0) return res.status(200).json({
             message : "Request successful. Tasks empty.",

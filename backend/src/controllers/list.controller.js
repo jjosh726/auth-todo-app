@@ -40,7 +40,16 @@ const getAllLists = async (req, res, next) => {
     try {
         const userId = req.userId;
 
-        const lists = await List.find({ userId });
+        let listsQuery = List.find({ userId });
+
+        const { include } = req.query;
+        if (include && include.includes('count')) {
+            listsQuery = listsQuery.populate({
+                path : "taskCount"
+            });
+        }
+
+        const lists = await listsQuery.exec();
         
         return res.status(200).json({
             message : "Request successful.",

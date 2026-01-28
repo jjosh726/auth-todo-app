@@ -47,6 +47,13 @@ listSchema.virtual('tasks', {
     foreignField : 'listId'
 });
 
+listSchema.virtual('taskCount', {
+    ref : 'Task',
+    localField : '_id',
+    foreignField : 'listId',
+    count : true
+});
+
 listSchema.set('toJSON', { virtuals : true });
 listSchema.set('toObject', { virtuals : true });
 
