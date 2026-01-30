@@ -71,11 +71,14 @@ const createTask = async (req, res, next) => {
 
         if (!title) throw new EmptyTitleError();
 
-        // check if listId exists and check if the list is owned by the user
-
-        const task = await Task.create({
+        let body = {
             title, description, dueDate, userId, listId
-        });
+        };
+
+        if (!dueDate) delete body.dueDate;
+        if (!listId) delete body.listId;
+
+        const task = await Task.create(body);
 
 
         return res.status(201).json({

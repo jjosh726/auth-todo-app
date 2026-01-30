@@ -6,13 +6,15 @@ export async function fetchUserTasks() {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            console.log("User tasks:", data);
 
             return data;
         } else {
             const error = await response.json();
-            throw new Error( error.message || 'Not Logged In.');
+            throw new Error( error.message );
         }
+
+        throw new Error('An error occured. Please try again later.');
 
     } catch (error) {
         displayPopup(error.message, false);
@@ -25,15 +27,39 @@ export async function fetchTask(taskId) {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            console.log("Current task:", data);
 
             return data;
         } else {
             const error = await response.json();
-            throw new Error( error.message || 'Task not found.' );
+            throw new Error( error.message );
         }
+
+        throw new Error('An error occured. Please try again later.');
 
     } catch (error) {
         displayPopup(error.message, false);
     }
+}
+
+export async function fetchCreateTask(body) {
+    const response = await fetch(`api/v1/task/`,
+        {
+            method : "POST",
+            credentials : "include",
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(body)
+        }
+    );
+
+    const data = await response.json();
+    console.log("New task:", data);
+
+    if (!response.ok) {
+        throw new Error( data.message || 'Failed to create Task' );
+    }
+
+    return data;
 }

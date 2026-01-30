@@ -6,7 +6,7 @@ export async function fetchUserLists() {
 
         if (response.ok) {
             const data = await response.json();
-            console.log(data);
+            console.log("User Lists:", data);
 
             return data;
         } else {
