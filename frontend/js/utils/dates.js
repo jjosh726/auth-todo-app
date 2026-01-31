@@ -4,17 +4,19 @@ export function parseDate(dateString) {
         overdue : false
     }
 
+    let dayObject = dayjs(dateString);
+    
     // if today, display (today)
-    if (dayjs().isSame(dateInfo.date)) dateInfo.date = 'Today';
+    if (dayjs().isSame(dayObject, 'day')) dateInfo.date = 'Today';
 
     // if tmrw, display (tomorrow)
-    if (dayjs().add(1, 'day').isSame(dateInfo.date)) dateInfo.date = 'Tomorrow';
+    if (dayjs().add(1, 'day').isSame(dayObject, 'day')) dateInfo.date = 'Tomorrow';
 
     // if year is not the same as todays year, display year
-    if (!dayjs().isSame( dayjs(dateString) , 'year')) dateInfo.date += " " + dayjs(dateString).format('YYYY')
+    if (!dayjs().isSame( dayObject , 'year')) dateInfo.date += " " + dayjs(dateString).format('YYYY')
 
     // if date is before today, overdue is true
-    if (dayjs().isAfter(dayjs(dateString))) {
+    if (dayjs().isAfter(dayObject, 'day')) {
         dateInfo.overdue = true;
         dateInfo.date += " OVERDUE";
     }
@@ -22,6 +24,11 @@ export function parseDate(dateString) {
     return dateInfo;
 }
 
+
 export const formatDateString = (dateString) => dayjs(dateString).format('YYYY-MM-DD');
 
-export const isToday = (dateString) => dayjs().isSame(dayjs(dateString));
+export const isDateInvalid = (dateString) => dayjs().isAfter(dayjs(dateString), 'day');
+
+export const isToday = (dateString) => dayjs().isSame(dayjs(dateString), 'day');
+
+export const isDateEqual = (dateString1, dateString2) => dayjs(dateString1).isSame(dayjs(dateString2), 'day');

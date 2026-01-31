@@ -23,8 +23,9 @@ export function displayPopup(errorMsg, success) {
 const modal = document.querySelector('dialog');
 const taskLayout = document.querySelector('.js-task-layout');
 
+const deleteTaskBtn = document.querySelector('.js-delete-task-modal');
 
-export function renderModal(task) {
+export function renderTaskModal(task) {
     if (!taskLayout.classList.contains('is-closed')) controlTaskSidebarState();
     modal.showModal();
 
@@ -64,10 +65,35 @@ export function renderModal(task) {
 
     document.querySelector('.js-task-information').innerHTML = modalHTML;
 
-    document.querySelector('.js-delete-task-modal').dataset.taskId = id;
+    // only have taskId, no subtaskId needed
+    deleteTaskBtn.dataset.taskId = id;
+    deleteTaskBtn.dataset.subtaskId = '';
+}
+
+
+export function renderSubtaskModal(subtask) {
+    if (!taskLayout.classList.contains('is-closed')) controlTaskSidebarState();
+    modal.showModal();
+
+    console.log("Modal subtask: ", subtask);
+
+    const {_id, taskId, title, completed} = subtask;
+
+    let modalHTML = '';
+
+    modalHTML += `
+        <div class="task-title">
+            <div class="modal-title">${title}</div>
+            <div class="modal-completed">${completed ? "COMPLETED" : "INCOMPLETE"}</div>
+        </div>
+    `;
+
+    document.querySelector('.js-task-information').innerHTML = modalHTML;
+
+    deleteTaskBtn.dataset.taskId = taskId;
+    deleteTaskBtn.dataset.subtaskId = _id;
 }
 
 export function closeModal() {
     modal.close();
 }
-

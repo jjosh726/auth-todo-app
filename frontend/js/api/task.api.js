@@ -64,8 +64,29 @@ export async function fetchCreateTask(body) {
     return data;
 }
 
+export async function fetchUpdateTask(taskId, body) {
+    const response = await fetch(`api/v1/task/${taskId}/`, 
+        {
+            method : "PUT",
+            credentials : "include",
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(body)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Failed to update task');
+    }
+
+    return data;
+}
+
 export async function fetchDeleteTask(taskId) {
-    const response = await fetch(`api/v1/task/${taskId}`,
+    const response = await fetch(`api/v1/task/${taskId}/`,
         {
             method : "DELETE",
             credentials : "include"

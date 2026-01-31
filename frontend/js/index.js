@@ -1,17 +1,21 @@
 import { fetchUserInfo } from "./api/auth.api.js";
 import { fetchUserLists } from "./api/list.api.js";
+import { fetchDeleteSubtask } from "./api/subtask.api.js";
 import { fetchDeleteTask, fetchUserTasks } from "./api/task.api.js";
 import { renderSidebar } from "./index/sidebar.js";
-import { completeSubtaskTaskbar, controlTaskSidebarState, createNewSubtask, deleteSubtaskTaskbar, renderTaskbarLists, resetTaskbarForm } from "./index/taskbar.js";
+import { completeSubtaskTaskbar, controlTaskSidebarState, createNewSubtask,  deleteSubtaskTaskbar, getActiveTask, handleSaveTask, renderTaskbarLists, resetTaskbarForm } from "./index/taskbar.js";
 import { renderMain } from "./index/tasks.js";
-import { closeModal, displayPopup } from "./utils/popup.js";
+import { closeModal, displayPopup, renderTaskModal } from "./utils/popup.js";
 
-const userLink = document.querySelector('.js-user-link');
-const loginLink = document.querySelector('.js-login-link');
+// -----------------------GLOBAL DOM EVENTS-------------------
 
+// TASKBAR DOM EVENTS
 const taskLayout = document.querySelector('.js-task-layout');
+const subtasksContainer = document.querySelector('.js-new-subtasks');
 
-// GLOBAL DOM EVENTS
+const deleteTaskbarBtn = document.querySelector('.js-delete-task');
+const saveTaskbarBtn = document.querySelector('.js-save-task');
+
 document.querySelector('.js-close-task-button')
     .addEventListener('click', controlTaskSidebarState);
 
@@ -23,9 +27,6 @@ document.querySelector('.js-add-new-task')
 
 document.querySelectorAll('.js-edit-task')
     .forEach(button => button.addEventListener('click', controlTaskSidebarState));
-
-// TASKBAR DOM EVENTS
-const subtasksContainer = document.querySelector('.js-new-subtasks');
 
 subtasksContainer.addEventListener('click', (e) => {
     const subtaskEl = e.target.closest('.js-sidebar-subtask');
@@ -44,19 +45,38 @@ subtasksContainer.addEventListener('click', (e) => {
     }
 });
 
+deleteTaskbarBtn.addEventListener('click', () => {
+    const task = getActiveTask();
+    renderTaskModal(task);
+})
+
+saveTaskbarBtn.addEventListener('click', handleSaveTask);
+
 // CREATE SUBTASK
 document.querySelector('.js-create-new-subtask')
     .addEventListener('click', createNewSubtask);
+
+
+
+
 
 // MODAL DOM EVENTS
 const deleteTaskBtn = document.querySelector('.js-delete-task-modal');
 
 deleteTaskBtn.addEventListener('click', async () => {
+        
         const taskId = deleteTaskBtn.dataset.taskId;
+        const subtaskId = deleteTaskBtn.dataset.subtaskId;
 
         try {
+            let data = null;
             closeModal();
-            const data = await fetchDeleteTask(taskId);
+
+            if (subtaskId) {
+                data = await fetchDeleteSubtask(taskId, subtaskId);
+            } else {
+                data = await fetchDeleteTask(taskId);
+            }
 
             displayPopup(data.message, true);
             reinit();
@@ -69,7 +89,10 @@ document.querySelector('.js-cancel-delete-modal')
     .addEventListener('click', closeModal)
 
 
-// INITIALIZATION
+
+
+
+// ---------------------INITIALIZATION--------------------------------
 async function init() {
     try {
         const { user } = await fetchUserInfo();
@@ -107,6 +130,13 @@ async function reinit() {
 }
 
 
+
+
+// -----------------USER INFORMATION-------------------------------
+const userLink = document.querySelector('.js-user-link');
+const loginLink = document.querySelector('.js-login-link');
+
+
 function updateUserInfo(user) {
     userLink.classList.toggle('is-invisible');
     loginLink.classList.toggle('is-invisible');
@@ -114,6 +144,9 @@ function updateUserInfo(user) {
     userLink.innerHTML = user.username;
 }
 
+
+
+// --------------MAIN FUNCTION + REINITIALIZATION EXPORT------------
 init();
 
 export default reinit;

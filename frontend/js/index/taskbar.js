@@ -1,19 +1,19 @@
-import { fetchCreateSubtask } from "../api/subtask.api.js";
-import { fetchCreateTask } from "../api/task.api.js";
+import { fetchCreateSubtask, fetchDeleteSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
+import { fetchCreateTask, fetchUpdateTask } from "../api/task.api.js";
 import reinit from "../index.js";
-import { formatDateString, parseDate } from "../utils/dates.js";
+import { formatDateString, isDateEqual, isDateInvalid, parseDate } from "../utils/dates.js";
 import { displayPopup } from "../utils/popup.js";
 
 // GLOBAL TASKBAR ACTIONS TRACKING
-let taskbarActions = {
-    task : null,
-    subtasks : {
-        updates : [],
-        deletes : [],
-        creates : [],
-        completes : []
-    }
+let taskbarState = {
+    activeTask : null,
+    deletedSubtasks : []
 }
+
+const titleInput = document.querySelector('.js-task-title');
+const descInput = document.querySelector('.js-task-description');
+const listInput = document.querySelector('.js-list-select');
+const dateInput = document.querySelector('.js-date-input');
 
 // ----------------------TASKBAR UI ACTIONS------------------
 
@@ -25,58 +25,186 @@ export function controlTaskSidebarState() {
 
 // ----------------------TASK ACTIONS------------------
 
-export function updateTask () {
-    // find all subtasks by looping backwards from newSubtasks
+// taskbar.js
+export function getActiveTask() {
+    return taskbarState.activeTask;
 }
 
-export async function createTask() {
-    
-    const title = document.querySelector('.js-task-title').innerText;
-    const description =  document.querySelector('.js-task-description').innerText;
-    
-    const listId = document.querySelector('.js-list-select').value;
-    const dueDate = document.querySelector('.js-date-input').value;
+export function validateTask(task) {
+    if (task.title === 'Enter title here') throw new Error('Please fill in title!');
+    if (task.dueDate && isDateInvalid(task.dueDate)) throw new Error('Due date cannot be before today!');
+    if (task.description === 'Enter description here') task.description = '';
 
+    return task;
+}
+
+
+function readTaskbarForm() {
+    return validateTask({
+        title : titleInput.innerText, 
+        description :  descInput.innerText,
+        listId : listInput.value,
+        dueDate : dateInput.value
+    });
+}
+
+
+export async function handleSaveTask() {
     try {
-        let body = {
-            title, description, dueDate, listId
+        const task = readTaskbarForm();
+
+        if (taskbarState.activeTask) {
+            await updateTask(task);
+        } else {
+            await createTask(task);
         }
 
-        if (!listId) delete body.listId;
-        if (!dueDate) delete body.dueDate;
+    } catch (error) {
+        displayPopup(error.message, false);
+    } 
+}
 
-        let { task } = await fetchCreateTask(body);
+// ----------------------- GET ALL SUBTASK INFORMATION ------------------------
 
-        let subtasks = [];
+function getUpdatedSubtasks(taskId) {
+    let fetchQueries = [];
 
-        document.querySelectorAll('.js-new-subtask-title')
-            .forEach(el => {
-                const title = el.innerText.trim();
+    // make update queries for old subtasks
+    document.querySelectorAll('.js-sidebar-subtask')
+        .forEach(subtask => {
+            const subtaskId = subtask.dataset.subtaskId;
 
-                if (title) 
-                    subtasks.push(() => fetchCreateSubtask(
-                    task.id, 
+            const completed = subtask.classList.contains('completed');
+            const title = subtask.innerText;
+            
+            let matchingSubtask = null;
+
+            taskbarState.activeTask.subtasks.forEach(existingSubtask => {
+                if (existingSubtask._id === subtaskId) {
+                    matchingSubtask = existingSubtask;
+                } 
+            });
+
+            if (!matchingSubtask) return;
+
+            let subtaskBody = {};
+
+            if (completed !== matchingSubtask.completed) subtaskBody.completed = completed;
+            if (title !== matchingSubtask.title) subtaskBody.title = title;
+
+            if (Object.keys(subtaskBody).length > 0) fetchQueries.push(() => {
+                fetchUpdateSubtask(taskId, subtaskId, subtaskBody);
+            })
+        })
+    
+    return fetchQueries;
+}
+
+function getDeletedSubtasks(taskId) {
+    let fetchQueries = [];
+
+    // make delete queries by looping through taskbarState.subtasks.deletes
+    taskbarState.deletedSubtasks.forEach(subtaskId => {
+        fetchQueries.push(() => {
+            fetchDeleteSubtask(taskId, subtaskId);
+        });
+    });
+
+    return fetchQueries;
+}
+
+function getCreatedSubtasks(taskId) {
+    let fetchQueries = [];
+
+    // make create queries for new subtasks added
+    document.querySelectorAll('.js-new-subtask')
+        .forEach(subtask => {
+            const title = subtask.innerText.trim();
+
+            if (title === 'Enter Subtask Title Here') {
+                displayPopup('Please enter subtask title', false);
+                return;
+            }
+
+            if (title) 
+                fetchQueries.push(() => fetchCreateSubtask(
+                    taskId, 
                     { title }
                 ));
-            })
+        });
 
-        await Promise.all(subtasks.map(fn => fn()));
+    return fetchQueries;
+}
 
-        displayPopup('New task successfully created.', true);
+async function updateTask(body) {
+    try {
+        const taskId = taskbarState.activeTask.id;
+
+        // for updates, 
+        // we only want the body to contain keys 
+        // in which are changed from the original task
+        for (const key in body) {
+            if (key in taskbarState.activeTask) {
+
+                // if the key is dueDate, delete it if they are the same
+                // from a custom function in dates.js
+                if (key === 'dueDate') {
+                    if (isDateEqual(body[key], taskbarState.activeTask[key])) {
+                        delete body[key];
+                    }
+                    continue;
+                }
+
+                // otherwise, a simple equality check will do
+                if (body[key] === taskbarState.activeTask[key]) {
+                    delete body[key];
+                }
+            }
+        }
+
+        if (Object.keys(body).length > 0) await fetchUpdateTask(taskId, body);
+
+        let fetchQueries = [
+            ...getUpdatedSubtasks(taskId), 
+            ...getDeletedSubtasks(taskId), 
+            ...getCreatedSubtasks(taskId)
+        ];
+
+        if (fetchQueries.length > 0) await Promise.all(fetchQueries.map(fn => fn()));
+
+        displayPopup('Task successfully updated.', true);
         resetTaskbarForm();
         controlTaskSidebarState();
-
         reinit();
     } catch (error) {
         displayPopup(error.message, false);
     }
 }
 
-export function deleteTask() {
+async function createTask(body) {
+    try {
+        if (!body.listId) delete body.listId;
+        if (!body.dueDate) delete body.dueDate;
 
+        let { task } = await fetchCreateTask(body);
+        const taskId = task.id;
+
+        let fetchQueries = [...getCreatedSubtasks(taskId)];
+
+        if (fetchQueries.length > 0) await Promise.all(fetchQueries.map(fn => fn()));
+
+        displayPopup('New task successfully created.', true);
+        resetTaskbarForm();
+        controlTaskSidebarState();
+        reinit();
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
 }
 
 // ----------------------TASKBAR UI AUTO UPDATES------------------
+
+const saveTaskBtn = document.querySelector('.js-save-task');
 
 export function renderTaskbarLists(lists) {
     let listSelectHTML = '';
@@ -92,66 +220,54 @@ export function renderTaskbarLists(lists) {
         `
     })
 
-    document.querySelector('.js-list-select').innerHTML += listSelectHTML;
+    listInput.innerHTML += listSelectHTML;
 }
 
 export function resetTaskbarForm() {
     // reset new subtasks
     newSubtasks = 0;
 
-    taskbarActions.task = null;
+    taskbarState = {
+        activeTask : null,
+        deletedSubtasks : []
+    }
 
-    document.querySelector('.js-task-title').innerHTML = 'Enter title here';
-    document.querySelector('.js-task-description').innerHTML = 'Enter description here';
-
-    document.querySelector('.js-list-select').value = '';
-    document.querySelector('.js-date-input').value = '';
+    titleInput.innerHTML = 'Enter title here';
+    descInput.innerHTML = 'Enter description here';
+    listInput.value = '';
+    dateInput.value = '';
 
     document.querySelector('.js-overdue-label').classList.remove('is-visible');
-
     document.querySelector('.js-new-subtasks').innerHTML = '';
 
-    // create tasks attributes
-    document.querySelector('.js-save-task').innerHTML = 'Save New Task';
-
-    document.querySelector('.js-save-task')
-        .addEventListener('click', createTask);
-
-    document.querySelector('.js-save-task')
-        .removeEventListener('click', updateTask);
+    saveTaskBtn.innerHTML = 'Save New Task';
+    document.querySelector('.js-delete-task').style.display = 'none';
 }
 
 export function renderTaskbar(task) {
-    // reset new subtasks
-    newSubtasks = 0;
+    resetTaskbarForm();
 
-    // save tasks attributes
-    document.querySelector('.js-save-task').innerHTML = 'Save Changes';
-
-    document.querySelector('.js-save-task')
-        .removeEventListener('click', createTask);
-
-    document.querySelector('.js-save-task')
-        .addEventListener('click', updateTask);
-
+    saveTaskBtn.innerHTML = 'Save Changes';
+    document.querySelector('.js-delete-task').style.display = 'flex';
+    
     // parse task
     const { title, description, subtasks, dueDate, listId } = task;
 
-    taskbarActions.task = task;
+    taskbarState.activeTask = task;
 
     // change title and description
-    document.querySelector('.js-task-title').innerHTML = title;
-    document.querySelector('.js-task-description').innerHTML = description;
+    titleInput.innerHTML = title;
+    descInput.innerHTML = description;
 
     // change list select
     if (listId) {
-        document.querySelector('.js-list-select').value = listId;
+        listInput.value = listId;
     } else {
-        document.querySelector('.js-list-select').value = '';
+        listInput.value = '';
     }
 
     // change date input
-    document.querySelector('.js-date-input').value = formatDateString(dueDate);
+    dateInput.value = formatDateString(dueDate);
 
     const dateInfo = parseDate(dueDate);
 
@@ -184,39 +300,30 @@ export function renderTaskbar(task) {
 
 // ----------------------SUBTASK ACTIONS------------------
 
-// acts as temporary IDs
-let newSubtasks = 0;
-
 // COMPLETE SUBTASKS
 export function completeSubtaskTaskbar(subtaskEl) {
-    const subtaskId = subtaskEl.dataset.subtaskId;
-
     subtaskEl.classList.toggle('completed');
-
-    taskbarActions.subtasks.completes.push(subtaskId);
-
-    console.log('taskbar actions', taskbarActions);
 }
 
 // DELETE SUBTASKS
 export function deleteSubtaskTaskbar(subtaskEl) {
-
     subtaskEl.remove();
 
     if (!subtaskEl.classList.contains('js-new-subtask')) {
         const subtaskId = subtaskEl.dataset.subtaskId;
-        taskbarActions.subtasks.deletes.push(subtaskId);
+        taskbarState.deletedSubtasks.push(subtaskId);
     }
-
-    console.log('taskbar actions', taskbarActions);
 }
 
+
+// acts as temporary IDs
+let newSubtasks = 0;
 
 export function createNewSubtask() {
     newSubtasks++;
 
     document.querySelector('.js-new-subtasks').innerHTML += `
-    <div class="js-sidebar-subtask js-new-subtask">
+    <div class="js-new-subtask">
         <div class="bul js-subtask-bul">
             <div></div>
         </div>
@@ -233,7 +340,7 @@ export function createNewSubtask() {
     const selection = window.getSelection();
     const range = document.createRange();
 
-    // 3. Select all the contents of the element
+    // Select all the contents of the element
     range.selectNodeContents(newElement);
 
     selection.removeAllRanges();
