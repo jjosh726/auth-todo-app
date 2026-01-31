@@ -1,6 +1,6 @@
 import { fetchTask } from "../api/task.api.js";
 import { parseDate } from "../utils/dates.js";
-import { displayPopup } from "../utils/popup.js";
+import { displayPopup, renderModal } from "../utils/popup.js";
 import { controlTaskSidebarState, renderTaskbar } from "./taskbar.js";
 
 const taskLayout = document.querySelector('.js-task-layout');
@@ -21,10 +21,13 @@ export function renderMain(tasks) {
                         <input type="checkbox" name="" id="" ${completed ? "checked" : ""}>
                     </div>
                     <div>${title}</div>
-                    <div class="date ${overdue ? "overdue" : ""}">${date}</div>
+                    ${dueDate ? `
+                        <div class="date ${overdue ? "overdue" : ""}">${dueDate ? date : ""}</div>
+                    ` : ""}
                 </div>
                 <div class="js-edit-task-button" data-task-id="${id}">
                     <svg class="edit-task js-edit-task" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Zm640-584-56-56 56 56Zm-141 85-28-29 57 57-29-28Z"/></svg>
+
                     <svg class="del-task js-del-task" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                 </div>
             </div>
@@ -50,7 +53,7 @@ export function renderMain(tasks) {
                         <div>${title}</div>
                     </div>
                     <div>
-                        <svg class="del-task js-del-task" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
+                        <svg class="del-task js-del-subtask" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>
                     </div>
                 </div>
             
@@ -67,22 +70,36 @@ export function renderMain(tasks) {
 
     document.querySelector('.js-tasks').innerHTML = tasksHTML;
 
-    document.querySelectorAll('.js-edit-task-button')
+    document.querySelectorAll('.js-edit-task')
         .forEach(button => {
             button.addEventListener('click', async () => {
-                const taskId = button.dataset.taskId;
+                const taskId = button.parentElement.dataset.taskId;
 
                 if (taskLayout.classList.contains('is-closed')) controlTaskSidebarState();
 
                 if (!taskLayout.classList.contains('is-closed')) {
                     try {
-                        const taskData = await fetchTask(taskId);
-                        const task = taskData.task;
+                        const { task } = await fetchTask(taskId);
     
                         renderTaskbar(task);
                     } catch (error) {
                         displayPopup(error.message, false);
                     }
+                }
+            })
+        });
+    
+    document.querySelectorAll('.js-del-task')
+        .forEach(button => {
+            button.addEventListener('click', async () => {
+                const taskId = button.parentElement.dataset.taskId;
+
+                try {
+                    const { task } = await fetchTask(taskId);
+
+                    renderModal(task);
+                } catch (error) {
+                    displayPopup(error.message, false);
                 }
             })
         })

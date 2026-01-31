@@ -63,3 +63,20 @@ export async function fetchCreateTask(body) {
 
     return data;
 }
+
+export async function fetchDeleteTask(taskId) {
+    const response = await fetch(`api/v1/task/${taskId}`,
+        {
+            method : "DELETE",
+            credentials : "include"
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error( data.message || 'Failed to delete task' );
+    }
+
+    return data;
+}

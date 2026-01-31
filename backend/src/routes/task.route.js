@@ -23,7 +23,7 @@ taskRouter.post('/', authorizeList, createTask);
 taskRouter.put('/:id', authorizeList, updateTask);
 
 // DELETE a task by id
-taskRouter.delete('/:id', authorizeList, deleteTask);
+taskRouter.delete('/:id', deleteTask);
 
 // PUT -> CHANGE ENTIRE RESOURCE
 // PATCH -> UPDATE PART OF RESOURCE

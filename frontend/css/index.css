@@ -1,5 +1,6 @@
 aside {
     width: 20vw;
+    height: 90vh;
     background-color: var(--grey-1);
     margin: 1em;
     padding: 1em;
@@ -155,6 +156,14 @@ section {
     }
 }
 
+.task-list {
+    height: 90vh;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+    padding-right: 1em;
+}
+
 section.is-closed {
     grid-template-columns: 1fr 0px;
 }
@@ -255,8 +264,8 @@ section.is-closed article {
 }
 
 .tasks {
-    height: 65%;
-    overflow-y: auto;
+    /* height: 65%; */
+    /* overflow-y: auto; */
     margin-top: 1em;
     display: flex;
     flex-direction: column;
@@ -365,6 +374,8 @@ article {
     background-color: var(--grey-1);
     padding: 2em;
     border-radius: 1em;
+
+    height: 90vh;
 
     display: flex;
     flex-direction: column;
@@ -768,4 +779,20 @@ input[type="date"]:focus {
 .del-subtask:hover {
     fill: var(--text-primary);
     scale: 1.1;
+}
+
+dialog {
+    position: fixed;
+    margin: auto;
+
+    background-color: var(--grey-1);
+
+    border-radius: 1em;
+    padding: 1em;
+    border: none;
+}
+
+dialog::backdrop {
+    background-color: rgba(0, 0, 0, 0.432);
+    backdrop-filter: blur(1px);
 }

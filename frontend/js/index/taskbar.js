@@ -1,6 +1,6 @@
 import { fetchCreateSubtask } from "../api/subtask.api.js";
 import { fetchCreateTask } from "../api/task.api.js";
-import init from "../index.js";
+import reinit from "../index.js";
 import { formatDateString, parseDate } from "../utils/dates.js";
 import { displayPopup } from "../utils/popup.js";
 
@@ -66,7 +66,7 @@ export async function createTask() {
         resetTaskbarForm();
         controlTaskSidebarState();
 
-        init();
+        reinit();
     } catch (error) {
         displayPopup(error.message, false);
     }

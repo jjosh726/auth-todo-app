@@ -1,10 +1,10 @@
 import { fetchUserInfo } from "./api/auth.api.js";
 import { fetchUserLists } from "./api/list.api.js";
-import { fetchUserTasks } from "./api/task.api.js";
+import { fetchDeleteTask, fetchUserTasks } from "./api/task.api.js";
 import { renderSidebar } from "./index/sidebar.js";
 import { completeSubtaskTaskbar, controlTaskSidebarState, createNewSubtask, deleteSubtaskTaskbar, renderTaskbarLists, resetTaskbarForm } from "./index/taskbar.js";
 import { renderMain } from "./index/tasks.js";
-import { displayPopup } from "./utils/popup.js";
+import { closeModal, displayPopup } from "./utils/popup.js";
 
 const userLink = document.querySelector('.js-user-link');
 const loginLink = document.querySelector('.js-login-link');
@@ -48,6 +48,27 @@ subtasksContainer.addEventListener('click', (e) => {
 document.querySelector('.js-create-new-subtask')
     .addEventListener('click', createNewSubtask);
 
+// MODAL DOM EVENTS
+const deleteTaskBtn = document.querySelector('.js-delete-task-modal');
+
+deleteTaskBtn.addEventListener('click', async () => {
+        const taskId = deleteTaskBtn.dataset.taskId;
+
+        try {
+            closeModal();
+            const data = await fetchDeleteTask(taskId);
+
+            displayPopup(data.message, true);
+            reinit();
+        } catch (error) {
+            displayPopup(error.message, false);
+        }
+    });
+
+document.querySelector('.js-cancel-delete-modal')
+    .addEventListener('click', closeModal)
+
+
 // INITIALIZATION
 async function init() {
     try {
@@ -55,6 +76,22 @@ async function init() {
 
         updateUserInfo(user);
 
+        const [{ lists }, { tasks }] = await Promise.all([
+            fetchUserLists(),
+            fetchUserTasks()
+        ]);
+
+        renderSidebar(lists, tasks);
+        renderTaskbarLists(lists);
+        renderMain(tasks)
+
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
+}
+
+async function reinit() {
+    try {
         const [{ lists }, { tasks }] = await Promise.all([
             fetchUserLists(),
             fetchUserTasks()
@@ -79,4 +116,4 @@ function updateUserInfo(user) {
 
 init();
 
-export default init;
+export default reinit;

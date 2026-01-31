@@ -47,7 +47,8 @@ taskSchema.pre("findOneAndDelete", async function (next) {
         const task = await this.model.find(this.getFilter());
         if (!task) throw new TaskNotFoundError();
         
-        await Subtask.deleteMany({ taskId : this._id });
+        await Subtask.deleteMany({ taskId : Task._id });
+
     } catch (err) {
         throw err;
     }
