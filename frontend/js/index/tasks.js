@@ -1,5 +1,5 @@
-import { fetchSubtask } from "../api/subtask.api.js";
-import { fetchTask } from "../api/task.api.js";
+import { fetchSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
+import { fetchTask, fetchUpdateTask } from "../api/task.api.js";
 import { parseDate } from "../utils/dates.js";
 import { displayPopup, renderSubtaskModal, renderTaskModal } from "../utils/popup.js";
 import { controlTaskSidebarState, renderTaskbar } from "./taskbar.js";
@@ -24,11 +24,11 @@ export function renderMain(tasks) {
         }
 
         tasksHTML += `
-        <div class="task-container" data-task-id="${id}">
+        <div class="task-container js-task" data-task-id="${id}">
             <div class="task">
                 <div>
                     <div class="list-col">
-                        <input type="checkbox" name="" id="" ${completed ? "checked" : ""}>
+                        <input class="js-complete-task" data-task-id="${id}" type="checkbox" ${completed ? "checked" : ""}>
                     </div>
                     <div>${title}</div>
                     ${dueDate ? `
@@ -58,7 +58,7 @@ export function renderMain(tasks) {
                 <div class="subtask" data-subtask-id="${subtaskId}">
                     <div>
                         <div class="list-col">
-                        <input type="checkbox" name="" id="" ${completed ? "checked" : ""}>
+                        <input data-subtask-id="${subtaskId}" class="js-complete-subtask" type="checkbox" ${completed ? "checked" : ""}>
                     </div>
                         <div>${title}</div>
                     </div>
@@ -127,6 +127,31 @@ export function renderMain(tasks) {
                 } catch (error) {
                     displayPopup(error.message, false);
                 }
+            })
+        })
+    
+    document.querySelectorAll('.js-complete-task')
+        .forEach(checkbox => {
+            checkbox.addEventListener('click', async () => {
+                const taskId = checkbox.dataset.taskId;
+
+                const completed = checkbox.checked;
+
+                await fetchUpdateTask(taskId, { completed });
+
+                // complete all subtasks under this task
+            })
+        })
+    
+    document.querySelectorAll('.js-complete-subtask')
+        .forEach(checkbox => {
+            checkbox.addEventListener('click', async () => {
+                const taskId = checkbox.closest('.js-task').dataset.taskId;
+                const subtaskId = checkbox.dataset.subtaskId;
+
+                const completed = checkbox.checked;
+
+                await fetchUpdateSubtask(taskId, subtaskId, { completed });
             })
         })
 }
