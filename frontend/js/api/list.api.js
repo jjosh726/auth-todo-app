@@ -1,21 +1,12 @@
-import { displayPopup } from "../utils/popup.js";
-
 export async function fetchUserLists() {
-    try {
-        const response = await fetch('api/v1/list/?include=count', { credentials : 'include' });
+    const response = await fetch('api/v1/list/?include=count', { credentials : 'include' });
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log("User Lists:", data);
+    const data = await response.json();
+    
+    if (!response.ok) {
+        throw new Error( data.message || 'An error occured. Please try again.');
+    } 
 
-            return data;
-        } else {
-            const error = await response.json();
-            throw new Error( error.message || 'Not Logged In.');
-        }
-
-    } catch (error) {
-        displayPopup(error.message, false);
-    }
+    return data;
 }
 

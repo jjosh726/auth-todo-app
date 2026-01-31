@@ -1,5 +1,6 @@
 import { fetchCreateSubtask, fetchDeleteSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
 import { fetchCreateTask, fetchUpdateTask } from "../api/task.api.js";
+import { PLACEHOLDERS } from "../config/constants.js";
 import reinit from "../index.js";
 import { formatDateString, isDateEqual, isDateInvalid, parseDate } from "../utils/dates.js";
 import { displayPopup } from "../utils/popup.js";
@@ -31,9 +32,8 @@ export function getActiveTask() {
 }
 
 export function validateTask(task) {
-    if (task.title === 'Enter title here') throw new Error('Please fill in title!');
+    if (!task.title) throw new Error('Please fill in title!');
     if (task.dueDate && isDateInvalid(task.dueDate)) throw new Error('Due date cannot be before today!');
-    if (task.description === 'Enter description here') task.description = '';
 
     return task;
 }
@@ -41,8 +41,8 @@ export function validateTask(task) {
 
 function readTaskbarForm() {
     return validateTask({
-        title : titleInput.innerText, 
-        description :  descInput.innerText,
+        title : titleInput.value, 
+        description :  descInput.value,
         listId : listInput.value,
         dueDate : dateInput.value
     });
@@ -121,7 +121,7 @@ function getCreatedSubtasks(taskId) {
         .forEach(subtask => {
             const title = subtask.innerText.trim();
 
-            if (title === 'Enter Subtask Title Here') {
+            if (title === PLACEHOLDERS.subtaskTitle) {
                 displayPopup('Please enter subtask title', false);
                 return;
             }
@@ -232,8 +232,8 @@ export function resetTaskbarForm() {
         deletedSubtasks : []
     }
 
-    titleInput.innerHTML = 'Enter title here';
-    descInput.innerHTML = 'Enter description here';
+    titleInput.value = '';
+    descInput.value = '';
     listInput.value = '';
     dateInput.value = '';
 
@@ -256,8 +256,8 @@ export function renderTaskbar(task) {
     taskbarState.activeTask = task;
 
     // change title and description
-    titleInput.innerHTML = title;
-    descInput.innerHTML = description;
+    titleInput.value = title;
+    descInput.value = description;
 
     // change list select
     if (listId) {
@@ -328,7 +328,7 @@ export function createNewSubtask() {
             <div></div>
         </div>
         <div class="js-new-subtask-title js-new-subtask-${newSubtasks}-title" contenteditable>
-            Enter Subtask title here
+            ${PLACEHOLDERS.subtaskTitle}
         </div>
         <svg class="js-del-subtask del-subtask" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"></path></svg>
     </div>

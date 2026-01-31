@@ -1,3 +1,6 @@
+import { fetchDeleteSubtask } from "../api/subtask.api.js";
+import { fetchDeleteTask } from "../api/task.api.js";
+import reinit from "../index.js";
 import { controlTaskSidebarState } from "../index/taskbar.js";
 import { parseDate } from "./dates.js";
 
@@ -92,6 +95,27 @@ export function renderSubtaskModal(subtask) {
 
     deleteTaskBtn.dataset.taskId = taskId;
     deleteTaskBtn.dataset.subtaskId = _id;
+}
+
+export async function deleteTask(deleteEl) {
+    const taskId = deleteEl.dataset.taskId;
+    const subtaskId = deleteEl.dataset.subtaskId;
+
+    try {
+        let data = null;
+        closeModal();
+
+        if (subtaskId) {
+            data = await fetchDeleteSubtask(taskId, subtaskId);
+        } else {
+            data = await fetchDeleteTask(taskId);
+        }
+
+        displayPopup(data.message, true);
+        reinit();
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
 }
 
 export function closeModal() {
