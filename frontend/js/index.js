@@ -4,6 +4,7 @@ import { fetchUserTasks } from "./api/task.api.js";
 import { renderSidebar } from "./index/sidebar.js";
 import { renderTaskbarLists } from "./index/taskbar.js";
 import { renderMain } from "./index/tasks.js";
+import { filterUserTasks } from "./utils/filter.js";
 import { displayPopup } from "./utils/popup.js";
 
 // ---------------------INITIALIZATION--------------------------------
@@ -29,13 +30,15 @@ async function init() {
 
 async function reinit() {
     try {
-        const [{ lists }, { tasks }] = await Promise.all([
+        let [{ lists }, { tasks }] = await Promise.all([
             fetchUserLists(),
             fetchUserTasks()
         ]);
 
         renderSidebar(lists, tasks);
-        renderMain(tasks)
+
+        tasks = filterUserTasks(tasks);
+        renderMain(tasks);
 
     } catch (error) {
         displayPopup(error.message, false);

@@ -36,7 +36,7 @@ export function renderTaskModal(task) {
 
     const {id, title, dueDate, completed, description, subtasks} = task;
 
-    const { date, overdue } = parseDate(dueDate)
+    const { date } = parseDate(dueDate)
 
     let modalHTML = '';
 

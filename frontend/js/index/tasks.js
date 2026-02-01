@@ -1,12 +1,30 @@
 import { fetchSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
 import { fetchTask, fetchUpdateTask } from "../api/task.api.js";
 import { parseDate } from "../utils/dates.js";
+import { filterUserTasks, getFilters } from "../utils/filter.js";
 import { displayPopup, renderSubtaskModal, renderTaskModal } from "../utils/popup.js";
 import { controlTaskSidebarState, renderTaskbar } from "./taskbar.js";
 
 const taskLayout = document.querySelector('.js-task-layout');
 
 export function renderMain(tasks) {
+    const filters = getFilters();
+
+    let mainTitle = '';
+
+    if (filters.category) {
+        mainTitle = filters.category;
+    } else if (filters.listId) {
+        mainTitle = filters.listId;
+    } else {
+        mainTitle = 'all';
+    }
+
+    document.querySelector('.js-title').innerHTML = `
+        ${mainTitle.charAt(0).toLocaleUpperCase(0) + mainTitle.slice(1)}
+        <div class="num">${tasks.length}</div>
+    `
+
     let tasksHTML = '';
 
     tasks.forEach(task => {
@@ -152,6 +170,8 @@ export function renderMain(tasks) {
                 const completed = checkbox.checked;
 
                 await fetchUpdateSubtask(taskId, subtaskId, { completed });
+
+                // if all subtasks complete, complete the main task
             })
         })
 }

@@ -162,6 +162,8 @@ async function updateTask(body) {
             }
         }
 
+        if ("listId" in body && body.listId === '') body.listId = null; 
+
         if (Object.keys(body).length > 0) await fetchUpdateTask(taskId, body);
 
         let fetchQueries = [
@@ -220,7 +222,7 @@ export function renderTaskbarLists(lists) {
         `
     })
 
-    listInput.innerHTML += listSelectHTML;
+    document.querySelector('.js-user-lists').innerHTML = listSelectHTML;
 }
 
 export function resetTaskbarForm() {

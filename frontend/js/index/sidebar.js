@@ -1,4 +1,4 @@
-import { isToday } from "../utils/dates.js";
+import { filterUserTasks } from "../utils/filter.js";
 
 export function renderSidebar(lists, tasks) {
     let listsHTML = '';
@@ -25,9 +25,9 @@ export function renderSidebar(lists, tasks) {
 
     document.querySelector('.js-all-count').innerHTML = tasks.length;
 
-    const todaysTasks = tasks.filter((task) => isToday(task.dueDate));
+    const todaysTasks = filterUserTasks(tasks, { category : 'today' });
     document.querySelector('.js-today-count').innerHTML = todaysTasks.length;
 
-    const completedTasks = tasks.filter((task) => task.completed);
+    const completedTasks = filterUserTasks(tasks, { category : 'completed' });
     document.querySelector('.js-completed-count').innerHTML = completedTasks.length;
 }

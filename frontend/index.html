@@ -40,8 +40,8 @@
         <aside>
             <div>
                 <h4>TASKS</h4>
-                <div class="task-categories">
-                    <div class="category">
+                <div class="task-categories js-task-categories">
+                    <div class="category" data-category="all">
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-600v-80h560v80H280Zm0 160v-80h560v80H280Zm0 160v-80h560v80H280ZM160-600q-17 0-28.5-11.5T120-640q0-17 11.5-28.5T160-680q17 0 28.5 11.5T200-640q0 17-11.5 28.5T160-600Zm0 160q-17 0-28.5-11.5T120-480q0-17 11.5-28.5T160-520q17 0 28.5 11.5T200-480q0 17-11.5 28.5T160-440Zm0 160q-17 0-28.5-11.5T120-320q0-17 11.5-28.5T160-360q17 0 28.5 11.5T200-320q0 17-11.5 28.5T160-280Z"/></svg>
                             All
@@ -50,7 +50,7 @@
                             
                         </div>
                     </div>
-                    <div class="category">
+                    <div class="category" data-category="today">
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M360-300q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Z"/></svg>
                             Today
@@ -59,7 +59,7 @@
                             
                         </div>
                     </div>
-                    <div class="category">
+                    <div class="category" data-category="completed">
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M382-320 155-547l57-57 170 170 366-366 57 57-423 423ZM200-160v-80h560v80H200Z"/></svg>
                             Completed
@@ -81,16 +81,16 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <!-- <div>
                 <h4>TAGS</h4>
                 <div class="tags-list">
                     <div class="tag"></div>
                 </div>
-            </div>
+            </div> -->
         </aside>
         <section class="js-task-layout is-closed">
             <div class="task-list js-task-list">
-                <h1>
+                <h1 class="js-title">
                     Today
                     <div class="num">5</div>
                 </h1>
@@ -119,7 +119,7 @@
 
                     <h1 class="task-title">
                         <input 
-                        class="js-task-title" 
+                        class="title-input js-task-title" 
                         type="text"  
                         placeholder="Enter title here">
                             
@@ -135,11 +135,10 @@
                         <div>
                             <label for="list-select">List:</label>
                             <select class="js-list-select" id="list-select">
-                                <!-- <button>
-                                    <selectedcontent></selectedcontent>
-                                </button> -->
-        
                                 <option value="">Unlisted</option>
+                                <div class="js-user-lists">
+
+                                </div>
                             </select>
                         </div>
     

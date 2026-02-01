@@ -796,3 +796,17 @@ dialog::backdrop {
     background-color: rgba(0, 0, 0, 0.432);
     backdrop-filter: blur(1px);
 }
+
+input[type="text"], textarea {
+    background-color: transparent;
+    border: none;
+}
+
+.title-input {
+    font-size: larger;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+}
