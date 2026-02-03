@@ -11,7 +11,7 @@ export async function fetchUpdateSubtask(taskId, subtaskId, body) {
     });
 
     const data = await response.json();
-    console.log('Updated subtask: ', data);
+    // console.log('Updated subtask: ', data);
 
     if (!response.ok) {
         throw new Error( data.message || 'Failed to update subtask');

@@ -6,7 +6,7 @@ export async function fetchUserTasks() {
 
         if (response.ok) {
             const data = await response.json();
-            console.log("User tasks:", data);
+            // console.log("User tasks:", data);
 
             return data;
         } else {
@@ -25,17 +25,12 @@ export async function fetchTask(taskId) {
     try {
         const response = await fetch(`api/v1/task/${taskId}?include=subtasks`, { credentials : 'include' });
 
-        if (response.ok) {
-            const data = await response.json();
-            console.log("Current task:", data);
+        const data = await response.json();
 
-            return data;
-        } else {
-            const error = await response.json();
-            throw new Error( error.message );
+        if (!response.ok) {
+            throw new Error( data.message || 'Failed to fetch Task' );
         }
-
-        throw new Error('An error occured. Please try again later.');
+        return data;
 
     } catch (error) {
         displayPopup(error.message, false);
@@ -66,6 +61,27 @@ export async function fetchCreateTask(body) {
 
 export async function fetchUpdateTask(taskId, body) {
     const response = await fetch(`api/v1/task/${taskId}/`, 
+        {
+            method : "PUT",
+            credentials : "include",
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(body)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Failed to update task');
+    }
+
+    return data;
+}
+
+export async function fetchUpdateTaskWithSubtasks(taskId, body) {
+    const response = await fetch(`api/v1/task/${taskId}/?include=subtasks`, 
         {
             method : "PUT",
             credentials : "include",

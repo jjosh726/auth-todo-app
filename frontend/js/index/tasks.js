@@ -1,7 +1,8 @@
 import { fetchSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
-import { fetchTask, fetchUpdateTask } from "../api/task.api.js";
+import { fetchTask, fetchUpdateTask, fetchUpdateTaskWithSubtasks } from "../api/task.api.js";
+import reinit from "../index.js";
 import { parseDate } from "../utils/dates.js";
-import { filterUserTasks, getFilters } from "../utils/filter.js";
+import { getFilters } from "../utils/filter.js";
 import { displayPopup, renderSubtaskModal, renderTaskModal } from "../utils/popup.js";
 import { controlTaskSidebarState, renderTaskbar } from "./taskbar.js";
 
@@ -21,7 +22,7 @@ export function renderMain(tasks) {
     }
 
     document.querySelector('.js-title').innerHTML = `
-        ${mainTitle.charAt(0).toLocaleUpperCase(0) + mainTitle.slice(1)}
+        ${mainTitle.charAt(0).toLocaleUpperCase() + mainTitle.slice(1)}
         <div class="num">${tasks.length}</div>
     `
 
@@ -42,7 +43,7 @@ export function renderMain(tasks) {
         }
 
         tasksHTML += `
-        <div class="task-container js-task" data-task-id="${id}">
+        <div class="task-container js-task js-task-${id}" data-task-id="${id}">
             <div class="task">
                 <div>
                     <div class="list-col">
@@ -73,7 +74,7 @@ export function renderMain(tasks) {
             const { title, completed } = subtask;
 
             tasksHTML += `
-                <div class="subtask" data-subtask-id="${subtaskId}">
+                <div class="subtask js-subtask js-subtask-${subtaskId}" data-subtask-id="${subtaskId}">
                     <div>
                         <div class="list-col">
                         <input data-subtask-id="${subtaskId}" class="js-complete-subtask" type="checkbox" ${completed ? "checked" : ""}>
@@ -150,28 +151,101 @@ export function renderMain(tasks) {
     
     document.querySelectorAll('.js-complete-task')
         .forEach(checkbox => {
-            checkbox.addEventListener('click', async () => {
+            checkbox.addEventListener('change', async () => {
                 const taskId = checkbox.dataset.taskId;
-
                 const completed = checkbox.checked;
 
-                await fetchUpdateTask(taskId, { completed });
-
-                // complete all subtasks under this task
+                updateTaskCompletion(taskId, completed);
             })
         })
     
     document.querySelectorAll('.js-complete-subtask')
         .forEach(checkbox => {
-            checkbox.addEventListener('click', async () => {
+            checkbox.addEventListener('change', async () => {
                 const taskId = checkbox.closest('.js-task').dataset.taskId;
                 const subtaskId = checkbox.dataset.subtaskId;
 
                 const completed = checkbox.checked;
 
-                await fetchUpdateSubtask(taskId, subtaskId, { completed });
-
-                // if all subtasks complete, complete the main task
+                updateSubtaskCompletion(taskId, subtaskId, completed);
             })
         })
+}
+
+async function updateTaskCompletion(taskId, completed) {
+    try {
+        const { task } = await fetchUpdateTaskWithSubtasks(taskId, { completed });
+    
+        let fetchQueries = [];
+    
+        // update all subtasks when task is completed
+        if (task.subtasks && completed) {
+            task.subtasks.forEach(subtask => {
+    
+                if (!subtask.completed)
+                    fetchQueries.push(() => {
+                        fetchUpdateSubtask(taskId, subtask._id, { completed : true });
+                    });
+    
+            })
+        }
+    
+        if (fetchQueries) {
+            await Promise.all(fetchQueries.map(fn => fn()));
+            reinit();
+        }
+
+        // if taskbar is open and all subtasks are updated, rerender the entire taskbar
+        if (!taskLayout.classList.contains('is-closed') && fetchQueries.length > 0) {
+            const taskInfo = await fetchTask(taskId);
+            
+            renderTaskbar(taskInfo.task);
+        } 
+
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
+}
+
+async function updateSubtaskCompletion(taskId, subtaskId, completed) {
+    try {
+        await fetchUpdateSubtask(taskId, subtaskId, { completed });
+
+        // if taskbar is open, update taskbar completion
+        const sidebarSubtaskEl = document.querySelector(`.js-sidebar-subtask-${subtaskId}`);
+
+        if (!taskLayout.classList.contains('is-closed') && sidebarSubtaskEl)
+            sidebarSubtaskEl.classList.toggle('completed');
+
+        // if all subtasks complete, complete the main task
+        const subtaskElements = document.querySelectorAll(`.js-task-${taskId} .js-subtask`);
+        
+        if (subtaskElements) {
+            let isAllSubtasksComplete = true;
+
+            subtaskElements.forEach(subtask => {
+                const completed = subtask.querySelector('.js-complete-subtask').checked;
+
+                if (!completed) isAllSubtasksComplete = false;
+            });
+            
+            const taskCheckbox = document.querySelector(`.js-task-${taskId} .js-complete-task`);
+
+            if (isAllSubtasksComplete) {
+
+                taskCheckbox.checked = true;
+                await fetchUpdateTask(taskId, { completed : true});
+
+            } else if (taskCheckbox.checked) {
+                // if not all subtasks complete but task checkbox is check
+                // uncheck and update
+                taskCheckbox.checked = false;
+                await fetchUpdateTask(taskId, { completed : false});
+            }
+        }
+
+
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
 }

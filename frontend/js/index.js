@@ -14,6 +14,8 @@ async function init() {
 
         updateUserInfo(user);
 
+        if (!user) window.location.href = '/login.html';
+
         const [{ lists }, { tasks }] = await Promise.all([
             fetchUserLists(),
             fetchUserTasks()

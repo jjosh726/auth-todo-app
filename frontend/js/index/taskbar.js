@@ -285,7 +285,7 @@ export function renderTaskbar(task) {
         const {_id, title, completed, taskId } = subtask;
 
         subtasksHTML += `
-        <div class="js-sidebar-subtask ${completed ? "completed" : ""}" data-subtask-id="${_id}" data-task-id="${taskId}">
+        <div class="js-sidebar-subtask js-sidebar-subtask-${_id} ${completed ? "completed" : ""}" data-subtask-id="${_id}" data-task-id="${taskId}">
             <div class="bul js-subtask-bul">
                 <div></div>
             </div>

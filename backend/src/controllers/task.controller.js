@@ -118,11 +118,21 @@ const updateTask = async (req, res, next) => {
         const userId = req.userId;
         const taskId = req.params.id;
         
-        const task = await Task.findOneAndUpdate(
+        let taskQuery = Task.findOneAndUpdate(
             { _id : taskId, userId }, 
             updates, 
             { new : true }
         );
+
+        const { include } = req.query;
+        if (include && include.includes("subtasks")) {
+            taskQuery = taskQuery.populate({
+                path : "subtasks"
+            });
+        }
+
+        const task = await taskQuery.exec();
+
         
         if (!task) throw new TaskNotFoundError();
 
