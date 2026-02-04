@@ -1,6 +1,6 @@
-import { fetchList } from "../api/list.api.js";
 import { fetchSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
 import { fetchTask, fetchUpdateTask, fetchUpdateTaskWithSubtasks } from "../api/task.api.js";
+import { EMPTY_TASKS_SUGGESTIONS } from "../config/constants.js";
 import reinit from "../index.js";
 import { parseDate } from "../utils/dates.js";
 import { getFilters } from "../utils/filter.js";
@@ -33,6 +33,13 @@ export async function renderMain(lists, tasks) {
     `
 
     let tasksHTML = '';
+
+    if (tasks.length === 0) {
+        const taskSuggestionCount = EMPTY_TASKS_SUGGESTIONS.length;
+        const randomNo = Math.floor(Math.random() * taskSuggestionCount);
+
+        tasksHTML += EMPTY_TASKS_SUGGESTIONS[randomNo];
+    }
 
     tasks.forEach(task => {
         // avoid confusing between taskId aand subtaskId

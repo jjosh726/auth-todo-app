@@ -1,5 +1,5 @@
 import { filterUserTasks } from "../utils/filter.js";
-import { deleteListModal } from "../utils/popup.js";
+import { deleteListModal, editListModal } from "../utils/popup.js";
 
 export function renderSidebar(lists, tasks) {
     let listsHTML = '';
@@ -35,11 +35,15 @@ export function renderSidebar(lists, tasks) {
 
     const completedTasks = filterUserTasks(tasks, { category : 'completed' });
     document.querySelector('.js-completed-count').innerHTML = completedTasks.length;
+    document.querySelector('.js-incompleted-count').innerHTML = tasks.length - completedTasks.length;
 
+    // UPDATE DOM EVENTS
     document.querySelectorAll('.js-edit-list')
         .forEach(button => {
             button.addEventListener('click', () => {
                 const listId = button.parentElement.dataset.listId;
+
+                editListModal(listId);
             });
         });
 

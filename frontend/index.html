@@ -31,7 +31,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
                 Login
             </a>
-            <a href="" class="user-link js-user-link is-invisible">
+            <a href="/login.html" class="user-link js-user-link is-invisible">
                 Username
             </a>
         </div>
@@ -62,13 +62,23 @@
                     <div class="category" data-category="completed">
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M382-320 155-547l57-57 170 170 366-366 57 57-423 423ZM200-160v-80h560v80H200Z"/></svg>
-                            Completed
+                            Complete
                         </div>
                         <div class="js-completed-count">
                             
                         </div>
                     </div>
+                    <div class="category" data-category="incompleted">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="m576-160-56-56 104-104-104-104 56-56 104 104 104-104 56 56-104 104 104 104-56 56-104-104-104 104Zm79-360L513-662l56-56 85 85 170-170 56 57-225 226ZM80-280v-80h360v80H80Zm0-320v-80h360v80H80Z"/></svg>
+                            Incomplete
+                        </div>
+                        <div class="js-incompleted-count">
+                            
+                        </div>
+                    </div>
                 </div>
+
             </div>
             <div>
                 <h4>LISTS</h4>
@@ -225,6 +235,7 @@
                     </div>
                 </form>
             </div>
+
             <div class="delete-list-modal js-delete-list-modal">
                 <h1>Delete this list?</h1>
                 
@@ -233,9 +244,29 @@
                 </div>
 
                 <div class="modal-buttons">
-                    <button class="js-delete-list-modal">Delete this List</button>
+                    <button class="js-delete-list-modal-button">Delete this List</button>
                     <button class="js-cancel-delete-modal">Cancel</button>
                 </div>
+            </div>
+
+            <div class="edit-list-modal js-edit-list-modal">
+                <form action="">
+                    <h1>Edit List</h1>
+                    <div>
+                        <label for="listName">List Name:</label><br>
+                        <input type="text" name="listName" id="listName">
+                    </div>
+
+                    <div>
+                        <label for="listColour">List Colour</label><br>
+                        <input type="color" name="listColour" id="">
+                    </div>
+                    <br>
+                    <div class="modal-buttons">
+                        <button class="js-edit-list-modal-button" type="submit">Edit List</button>
+                        <button class="js-cancel-delete-modal" type="button">Cancel</button>
+                    </div>
+                </form>
             </div>
         </dialog>
     </div>

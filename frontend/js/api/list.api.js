@@ -72,3 +72,23 @@ export async function fetchCreateList(body) {
     return data;
 }
 
+export async function fetchUpdateList(listId, body) {
+    const response = await fetch(`api/v1/list/${listId}`,
+        {
+            method : "PUT",
+            credentials : "include",
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(body)
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error( data.message || 'Failed to create List' );
+    }
+
+    return data;
+}

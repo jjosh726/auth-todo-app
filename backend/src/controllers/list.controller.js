@@ -25,6 +25,7 @@ const createList = async (req, res, next) => {
             list : {
                 id : list._id,
                 name : list.name,
+                color : list.color,
                 userId : list.userId,
                 createdAt : list.createdAt,
                 updatedAt : list.updatedAt
@@ -106,16 +107,16 @@ const getListById = async (req, res, next) => {
 // update list name
 const updateList = async (req, res, next) => {
     try {
-        const { name } = req.body;
+        const { name, color } = req.body;
 
-        if (!name) throw new EmptyRequestError();
+        if (!name && !color) throw new EmptyRequestError();
 
         const userId = req.userId;
         const listId = req.params.id;
 
         const list = await List.findOneAndUpdate(
             { _id : listId, userId },
-            { name },
+            { name, color },
             { new : true }
         );
 

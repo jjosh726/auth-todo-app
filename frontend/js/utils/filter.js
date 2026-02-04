@@ -15,9 +15,16 @@ export function getFilters() {
 }
 
 export function filterUserTasks(tasks, options = {}) {
-    const category = options.category ?? filters.category;
-    const listId = options.listId ?? filters.listId;
+    let listId, category;
 
+    if (Object.keys(options).length > 0) {
+        category = options.category;
+        listId = options.listId;
+    } else {
+        category = filters.category;
+        listId = filters.listId;
+    }
+    
     let result = tasks;
 
     if (category) result = filterByCategory(tasks, category);
@@ -36,6 +43,9 @@ function filterByCategory(tasks, category) {
         
         case 'completed':
             return tasks.filter(task => task.completed);
+        
+        case 'incompleted':
+            return tasks.filter(task => !task.completed);
         
         default:
             return tasks;

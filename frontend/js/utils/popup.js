@@ -1,4 +1,4 @@
-import { fetchCreateList, fetchDeleteList, fetchList, fetchListWithTaskCount } from "../api/list.api.js";
+import { fetchCreateList, fetchDeleteList, fetchList, fetchListWithTaskCount, fetchUpdateList } from "../api/list.api.js";
 import { fetchDeleteSubtask } from "../api/subtask.api.js";
 import { fetchDeleteTask } from "../api/task.api.js";
 import reinit from "../index.js";
@@ -164,7 +164,7 @@ export async function deleteListModal(listId) {
         `;
 
         document.querySelector('.js-list-information').innerHTML = listModalHTML;
-        document.querySelector('.js-delete-list-modal').dataset.listId = listId;
+        document.querySelector('.js-delete-list-modal-button').dataset.listId = listId;
 
     } catch (error) {
         displayPopup(error.message, false);
@@ -189,6 +189,59 @@ export async function deleteList(deleteListEl) {
 }
 
 // ------------------ EDIT LIST RELATED MODALS-----------------------------
+
+export async function editListModal(listId) {
+    openModal('edit-list');
+
+    try {
+        const { list } = await fetchList(listId);
+        const { name, color } = list;
+
+        const editListModalEl = document.querySelector('.js-edit-list-modal');
+
+        editListModalEl.querySelector('input[type="text"]').value = name;
+        editListModalEl.querySelector('input[type="color"]').value = color;
+
+        document.querySelector('.js-edit-list-modal-button').dataset.listId = listId;
+
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
+    
+}
+
+export async function editList(editListEl) {
+    const listId = editListEl.dataset.listId;
+
+    try {
+        closeModal();
+
+        const { list } = await fetchList(listId);
+
+        const editListModalEl = document.querySelector('.js-edit-list-modal');
+
+        const name = editListModalEl.querySelector('input[type="text"]').value;
+        const color = editListModalEl.querySelector('input[type="color"]').value;
+
+        let body = {name, color};
+
+        if (list.name === name) delete body.name;
+        if (list.color === color) delete body.color;
+
+        if (Object.keys(body).length === 0) {
+            displayPopup('No changes were made.', true);
+            return;
+        } else {
+            const data = await fetchUpdateList(listId, body);
+
+            displayPopup(data.message, true);
+            reinit();
+        }
+
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
+}
 
 // ------------------ GENERAL MODAL FUNCTIONS -----------------------------
 

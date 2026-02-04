@@ -7,6 +7,8 @@ const taskLayout = document.querySelector('.js-task-layout');
 
 document.querySelector('.js-task-categories')
     .addEventListener('click', e => {
+        if (!e.target.closest('.category')) return;
+        
         const category = e.target.closest('.category').dataset.category;
 
         resetFilters();
