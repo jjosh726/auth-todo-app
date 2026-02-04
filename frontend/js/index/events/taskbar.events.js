@@ -1,3 +1,4 @@
+import { renderTaskModal } from "../../utils/popup.js";
 import { completeSubtaskTaskbar,  createNewSubtask, getActiveTask, handleSaveTask } from "../taskbar.js";
 
 // TASKBAR DOM EVENTS

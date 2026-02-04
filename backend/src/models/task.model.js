@@ -14,7 +14,7 @@ const taskSchema = new Schema(
         },
         description : {
             type : String,
-            required : true,
+            // required : function () { return this.description !== null; },
             trim : true,
             minLength : 1,
             maxLength : 2500

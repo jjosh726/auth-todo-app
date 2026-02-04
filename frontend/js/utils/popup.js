@@ -1,8 +1,10 @@
+import { fetchCreateList, fetchDeleteList, fetchList, fetchListWithTaskCount } from "../api/list.api.js";
 import { fetchDeleteSubtask } from "../api/subtask.api.js";
 import { fetchDeleteTask } from "../api/task.api.js";
 import reinit from "../index.js";
 import { controlTaskSidebarState } from "../index/taskbar.js";
 import { parseDate } from "./dates.js";
+import { resetFilters } from "./filter.js";
 
 const popup = document.querySelector('.js-popup');
 
@@ -23,6 +25,8 @@ export function displayPopup(errorMsg, success) {
     }, 2000);
 }
 
+// ------------------TASK RELATED MODALS----------------------------------------
+
 const modal = document.querySelector('dialog');
 const taskLayout = document.querySelector('.js-task-layout');
 
@@ -30,13 +34,10 @@ const deleteTaskBtn = document.querySelector('.js-delete-task-modal');
 
 export function renderTaskModal(task) {
     if (!taskLayout.classList.contains('is-closed')) controlTaskSidebarState();
-    modal.showModal();
-
-    console.log("Modal task:", task);
+    openModal('task');
 
     const {id, title, dueDate, completed, description, subtasks} = task;
-
-    const { date } = parseDate(dueDate)
+    const { date } = parseDate(dueDate);
 
     let modalHTML = '';
 
@@ -76,9 +77,9 @@ export function renderTaskModal(task) {
 
 export function renderSubtaskModal(subtask) {
     if (!taskLayout.classList.contains('is-closed')) controlTaskSidebarState();
-    modal.showModal();
+    openModal('task');
 
-    console.log("Modal subtask: ", subtask);
+    // console.log("Modal subtask: ", subtask);
 
     const {_id, taskId, title, completed} = subtask;
 
@@ -116,6 +117,105 @@ export async function deleteTask(deleteEl) {
     } catch (error) {
         displayPopup(error.message, false);
     }
+}
+// ------------------ CREATE LIST RELATED MODALS-----------------------------
+export function createListModal() {
+    openModal('create-list');
+}
+
+export async function createList() {
+    const createListModalEl = document.querySelector('.js-create-list-modal');
+
+    const name = createListModalEl.querySelector('input[type="text"]').value;
+    const color = createListModalEl.querySelector('input[type="color"]').value;
+
+    
+    try {
+        await fetchCreateList({ name, color });
+        
+        closeModal();
+        reinit();
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
+}
+
+// ------------------ DELETE LIST RELATED MODALS-----------------------------
+
+export async function deleteListModal(listId) {
+    openModal('delete-list');
+
+    try {
+        const { list } = await fetchListWithTaskCount(listId);
+
+        const { name, color, taskCount } = list;
+
+        let listModalHTML = `
+        <div>
+            <div 
+            class="list-col"
+            style="
+                background-color: 
+                ${color};"
+            ></div>
+            ${name}
+        </div>
+        <div>${taskCount}</div>
+        `;
+
+        document.querySelector('.js-list-information').innerHTML = listModalHTML;
+        document.querySelector('.js-delete-list-modal').dataset.listId = listId;
+
+    } catch (error) {
+        displayPopup(error.message, false);
+        closeModal();
+    }
+}
+
+export async function deleteList(deleteListEl) {
+    const listId = deleteListEl.dataset.listId;
+
+    try {
+        closeModal();
+
+        const data = await fetchDeleteList(listId);
+
+        displayPopup(data.message, true);
+        resetFilters();
+        reinit();
+    } catch (error) {
+        displayPopup(error.message, false);
+    }
+}
+
+// ------------------ EDIT LIST RELATED MODALS-----------------------------
+
+// ------------------ GENERAL MODAL FUNCTIONS -----------------------------
+
+function openModal(mode) {
+    for (const element of document.querySelector('dialog').children) {
+        element.style.display = 'none';
+    }
+    
+    switch (mode) {
+        case 'task':
+            document.querySelector('.js-task-modal').style.display = 'block';
+            break;
+        
+        case 'create-list':
+            document.querySelector('.js-create-list-modal').style.display = 'block';
+            break;
+        
+        case 'delete-list':
+            document.querySelector('.js-delete-list-modal').style.display = 'block';
+            break;
+        
+        case 'edit-list':
+            document.querySelector('.js-edit-list-modal').style.display = 'block';
+            break;
+    }
+    
+    modal.showModal();
 }
 
 export function closeModal() {

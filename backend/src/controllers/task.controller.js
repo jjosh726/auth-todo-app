@@ -23,8 +23,6 @@ const getTasks = async (req, res, next) => {
             tasks
         })
 
-        // console.log(tasks);
-
         res.status(200).json({
             message : "Request succesful.",
             tasks
@@ -65,6 +63,7 @@ const getTaskById = async (req, res, next) => {
 
 const createTask = async (req, res, next) => {
     try {
+        console.log(req.body);
         const { title, description, dueDate, listId} = req.body;
 
         const userId = req.userId;
@@ -75,6 +74,7 @@ const createTask = async (req, res, next) => {
             title, description, dueDate, userId, listId
         };
 
+        if (!description) delete body.description;
         if (!dueDate) delete body.dueDate;
         if (!listId) delete body.listId;
 

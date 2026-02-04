@@ -15,6 +15,11 @@ const listSchema = new Schema(
             type : Schema.Types.ObjectId,
             ref : 'User',
             required : true
+        }, 
+        color : {
+            type : String,
+            required : true,
+            trim : true
         }
     },
     {

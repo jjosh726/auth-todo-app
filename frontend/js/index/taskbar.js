@@ -3,6 +3,7 @@ import { fetchCreateTask, fetchUpdateTask } from "../api/task.api.js";
 import { PLACEHOLDERS } from "../config/constants.js";
 import reinit from "../index.js";
 import { formatDateString, isDateEqual, isDateInvalid, parseDate } from "../utils/dates.js";
+import { getFilters } from "../utils/filter.js";
 import { displayPopup } from "../utils/popup.js";
 
 // GLOBAL TASKBAR ACTIONS TRACKING
@@ -56,6 +57,7 @@ export async function handleSaveTask() {
         if (taskbarState.activeTask) {
             await updateTask(task);
         } else {
+            console.log(task);
             await createTask(task);
         }
 
@@ -212,12 +214,13 @@ export function renderTaskbarLists(lists) {
     let listSelectHTML = '';
 
     lists.forEach(list => {
-        const { id, name } = list;
+        const { id, name, color } = list;
 
         listSelectHTML += `
             <option value="${id}" data-list-id="${id}">
-                <span class="icon" aria-hidden="true">🐱</span
-                ><span class="option-label">${name}</span>
+                <span class="icon" aria-hidden="true"
+                style="background-color: ${color};"></span>
+                <span class="option-label">${name}</span>
             </option>
         `
     })
@@ -234,11 +237,15 @@ export function resetTaskbarForm() {
         deletedSubtasks : []
     }
 
+    
     titleInput.value = '';
     descInput.value = '';
     listInput.value = '';
     dateInput.value = '';
-
+    
+    let filters = getFilters();
+    if (filters.listId) listInput.value = filters.listId;
+    
     document.querySelector('.js-overdue-label').classList.remove('is-visible');
     document.querySelector('.js-new-subtasks').innerHTML = '';
 
@@ -259,7 +266,12 @@ export function renderTaskbar(task) {
 
     // change title and description
     titleInput.value = title;
-    descInput.value = description;
+    
+    if (description) {
+        descInput.value = description;
+    } else {
+        descInput.value = '';
+    }
 
     // change list select
     if (listId) {

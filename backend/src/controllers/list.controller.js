@@ -7,7 +7,7 @@ import { List } from "../models/list.model.js";
 const createList = async (req, res, next) => {
     try {
         const userId = req.userId;
-        const { name } = req.body;
+        const { name, color } = req.body;
 
         if (!name) throw new EmptyRequestError();
 
@@ -16,7 +16,8 @@ const createList = async (req, res, next) => {
 
         const list = await List.create({
             name,
-            userId
+            userId,
+            color
         });
 
         return res.status(201).json({
@@ -67,7 +68,7 @@ const getListById = async (req, res, next) => {
         const listId = req.params.id;
         const userId = req.userId;
 
-        console.log(req.query);
+        // console.log(req.query);
 
         let listQuery = List.findOne({
             _id : listId,
@@ -80,6 +81,12 @@ const getListById = async (req, res, next) => {
             listQuery = listQuery.populate({
                 path : 'tasks',
                 populate : include.includes("subtasks") ? { path : 'subtasks' } : null
+            });
+        }
+
+        if (include && include.includes('count')) {
+            listQuery = listQuery.populate({
+                path : "taskCount"
             });
         }
 

@@ -39,8 +39,6 @@ const login = async (req, res, next) => {
         // find user by email
         const user = await User.findOne({ email : email.toLowerCase() });
 
-        // console.log(user);
-
         if (!user) throw new UserNotFoundError();
 
         // compare password

@@ -1,3 +1,4 @@
+import { fetchList } from "../api/list.api.js";
 import { fetchSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
 import { fetchTask, fetchUpdateTask, fetchUpdateTaskWithSubtasks } from "../api/task.api.js";
 import reinit from "../index.js";
@@ -8,7 +9,7 @@ import { controlTaskSidebarState, renderTaskbar } from "./taskbar.js";
 
 const taskLayout = document.querySelector('.js-task-layout');
 
-export function renderMain(tasks) {
+export async function renderMain(lists, tasks) {
     const filters = getFilters();
 
     let mainTitle = '';
@@ -16,7 +17,12 @@ export function renderMain(tasks) {
     if (filters.category) {
         mainTitle = filters.category;
     } else if (filters.listId) {
-        mainTitle = filters.listId;
+        try {
+            const list = findMatchingList(lists, filters.listId);
+            mainTitle = list.name;
+        } catch (error) {
+            displayPopup(error.message, false);
+        }
     } else {
         mainTitle = 'all';
     }
@@ -31,7 +37,7 @@ export function renderMain(tasks) {
     tasks.forEach(task => {
         // avoid confusing between taskId aand subtaskId
         const taskId = task.id;
-        const { id, title, completed, subtasks, dueDate } = task;
+        const { id, title, completed, subtasks, dueDate, listId } = task;
 
         let date, overdue;
 
@@ -42,12 +48,26 @@ export function renderMain(tasks) {
             overdue = dateInfo.overdue;
         }
 
+        let list = null;
+        if (listId) list = findMatchingList(lists, listId);
+
         tasksHTML += `
         <div class="task-container js-task js-task-${id}" data-task-id="${id}">
             <div class="task">
                 <div>
-                    <div class="list-col">
-                        <input class="js-complete-task" data-task-id="${id}" type="checkbox" ${completed ? "checked" : ""}>
+                    <div 
+                    class="list-col"
+                    style="
+                        background-color: 
+                        ${list ? list.color : "var(--grey-3)"};"
+                    >
+                        <input class="js-complete-task" 
+                        data-task-id="${id}" 
+                        type="checkbox" ${completed ? "checked" : ""}
+                        style="
+                            accent-color: 
+                            ${list ? list.color : "var(--grey-3)"};"
+                        >
                     </div>
                     <div>${title}</div>
                     ${dueDate ? `
@@ -76,9 +96,19 @@ export function renderMain(tasks) {
             tasksHTML += `
                 <div class="subtask js-subtask js-subtask-${subtaskId}" data-subtask-id="${subtaskId}">
                     <div>
-                        <div class="list-col">
-                        <input data-subtask-id="${subtaskId}" class="js-complete-subtask" type="checkbox" ${completed ? "checked" : ""}>
-                    </div>
+                        <div class="list-col" 
+                        style="
+                            background-color: 
+                            ${list ? list.color : "var(--grey-3)"};"
+                        >
+                            <input 
+                            data-subtask-id="${subtaskId}" class="js-complete-subtask" 
+                            type="checkbox" ${completed ? "checked" : ""}
+                            style="
+                            accent-color: 
+                            ${list ? list.color : "var(--grey-3)"};"
+                            >
+                        </div>
                         <div>${title}</div>
                     </div>
                     <div data-task-id="${taskId}" data-subtask-id="${subtaskId}">
@@ -248,4 +278,8 @@ async function updateSubtaskCompletion(taskId, subtaskId, completed) {
     } catch (error) {
         displayPopup(error.message, false);
     }
+}
+
+function findMatchingList(lists, listId) {
+    return lists.filter(list => list.id === listId)[0];
 }

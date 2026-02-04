@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
+    <title>Home Page</title>
 
     <link rel="stylesheet" href="/css/colors.css">
     <link rel="stylesheet" href="/css/index.css">
@@ -73,7 +73,7 @@
             <div>
                 <h4>LISTS</h4>
                 <div class="lists-categories">
-                    <div class="create-new-list">
+                    <div class="create-new-list js-create-new-list">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
                         Create New List
                     </div>
@@ -185,23 +185,57 @@
 
     <div class="dialog-container">
         <dialog>
-            <p>Delete this task?</p>
-            <div class="task-information js-task-information">
-                <div class="task-title">
-                    <div class="modal-title"></div>
-                    <div class="modal-date"></div>
-                    <div class="modal-completed"></div>
+            <div class="delete-task-modal js-task-modal">
+                <h1>Delete This Task?</h1>
+                <div class="task-information js-task-information">
+                    <div class="task-title">
+                        <div class="modal-title"></div>
+                        <div class="modal-date"></div>
+                        <div class="modal-completed"></div>
+                    </div>
+                    <hr>
+                    <p>Description</p>
+                    <hr>
+                    <ul class="task-subtasks">
+                        <li>title</li>
+                    </ul>
                 </div>
-                <hr>
-                <p>Description</p>
-                <hr>
-                <ul class="task-subtasks">
-                    <li>title</li>
-                </ul>
+                <br>
+                <div class="modal-buttons">
+                    <button class="js-delete-task-modal">Delete this Task</button>
+                    <button class="js-cancel-delete-modal">Cancel</button>
+                </div>
             </div>
-            <div>
-                <button class="js-delete-task-modal">Delete this Task</button>
-                <button class="js-cancel-delete-modal">Cancel</button>
+            <div class="create-list-modal js-create-list-modal">
+                <form action="">
+                    <h1>Create New List</h1>
+                    <div>
+                        <label for="listName">List Name:</label><br>
+                        <input type="text" name="listName" id="listName">
+                    </div>
+
+                    <div>
+                        <label for="listColour">List Colour</label><br>
+                        <input type="color" name="listColour" id="">
+                    </div>
+                    <br>
+                    <div class="modal-buttons">
+                        <button class="js-create-list" type="submit">Create List</button>
+                        <button class="js-cancel-delete-modal" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <div class="delete-list-modal js-delete-list-modal">
+                <h1>Delete this list?</h1>
+                
+                <div class="list-information js-list-information">
+                    
+                </div>
+
+                <div class="modal-buttons">
+                    <button class="js-delete-list-modal">Delete this List</button>
+                    <button class="js-cancel-delete-modal">Cancel</button>
+                </div>
             </div>
         </dialog>
     </div>

@@ -23,7 +23,7 @@ async function init() {
 
         renderSidebar(lists, tasks);
         renderTaskbarLists(lists);
-        renderMain(tasks)
+        renderMain(lists, tasks)
 
     } catch (error) {
         displayPopup(error.message, false);
@@ -40,7 +40,8 @@ async function reinit() {
         renderSidebar(lists, tasks);
 
         tasks = filterUserTasks(tasks);
-        renderMain(tasks);
+        renderMain(lists, tasks);
+        renderTaskbarLists(lists);
 
     } catch (error) {
         displayPopup(error.message, false);

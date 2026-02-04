@@ -124,6 +124,9 @@ aside > div {
     width: 1.4em;
     height: 1.4em;
 
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     & div {
         width: 50%;
@@ -132,7 +135,7 @@ aside > div {
 
         
         border-radius: 0.2em;
-        background-color: var(--info);
+        /* background-color: var(--info); */
     }
 }
 
@@ -217,7 +220,7 @@ section.is-closed article {
     }
 }
 
-.add-new:hover, .filter:hover {
+.add-new:hover, .filter:hover, dialog button:hover {
     background-color: var(--grey-2);
     
     & div {
@@ -297,7 +300,7 @@ section.is-closed article {
 }
 
 .list-col {
-    background-color: gold;
+    /* background-color: gold; */
     padding: 0 0.2em;
     /* height: 100%; */
     
@@ -484,6 +487,12 @@ option {
   background: #eeeeee;
   padding: 10px;
   transition: 0.4s;
+}
+
+option .icon {
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 0.2em;
 }
 
 option:first-of-type {
@@ -809,4 +818,147 @@ input[type="text"], textarea {
 
 textarea {
     width: 100%;
+}
+
+
+.modal-buttons {
+    display: flex;
+    gap: 0.2em;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+dialog button {
+    padding: 0.2em 0.5em;
+    border-radius: 0.3em;
+    
+    transition: .1s ease;
+
+    border: none;
+    font-size: larger;
+    font-weight: bold;
+
+    color: var(--text-secondary);
+}
+
+dialog button:hover {
+    background-color: var(--grey-2);
+    
+    color: var(--text-primary);
+}
+
+dialog h1 {
+    margin-bottom: 0.8em;
+}
+
+dialog input[type="text"] {
+    font-size: larger;
+        
+    font-weight: 500;
+    color: var(--text-tertiary);
+    gap: 0.5em;
+
+    border: 0.15em var(--text-tertiary) solid !important;
+    border-radius: 0.5em;
+    outline: none;
+    padding: 0.5em 1em;
+}
+
+dialog input[type="color"] {
+    width: 100%;
+    height: 3em;
+    border-radius: 0.5em;
+
+    outline: none;
+    padding: 0.2em;
+
+    border: 0.15em var(--text-tertiary) solid !important;
+}
+
+dialog label {
+    font-weight: bold;
+    font-size: large;
+}
+
+dialog div:has(input) {
+    margin-bottom: 0.5em;
+}
+
+.list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.2em 0.5em;
+    border-radius: 0.3em;
+    
+    
+    transition: .1s ease;
+
+    & > div {
+        display: flex;
+        align-items: center;
+        font-size: larger;
+        
+        font-weight: 500;
+        color: var(--text-secondary);
+        gap: 0.5em;
+    }
+
+    & .task-count {
+        background-color: var(--grey-2);
+        font-size: medium;
+        padding: 0.2em 0.7em;
+        border-radius: 0.3em;
+    }
+
+    & .name {
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+}
+
+
+.list svg {
+    /* display: none; */
+    opacity: 0;
+    scale: 0.5;
+
+    fill: var(--text-tertiary);
+
+    transition: .1s ease;
+}
+
+.list:hover svg {
+    /* display: flex; */
+    opacity: 1;
+    scale: 0.8;
+
+}
+
+.list svg:hover {
+    scale: 1.2;
+    fill: var(--text-primary);
+}
+
+.list-information {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+
+    & div:first-of-type {
+        display: flex;
+        font-weight: bold;
+        font-size: large;
+
+        gap: 0.2em;
+
+    }
+
+    & div:last-of-type {
+        background-color: var(--grey-2);
+        font-size: medium;
+        padding: 0.2em 0.7em;
+        border-radius: 0.3em;
+    }
 }
