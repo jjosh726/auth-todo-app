@@ -1,0 +1,134 @@
+form {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2em;
+}
+
+form > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    align-items: center;
+    justify-content: center;
+}
+
+label {
+    font-weight: bold;
+    font-size: large;
+}
+
+input {
+    font-size: larger;
+        
+    font-weight: 500;
+    color: var(--text-tertiary);
+    gap: 0.5em;
+
+    border: 0.15em var(--text-tertiary) solid;
+    border-radius: 0.5em;
+    outline: none;
+    padding: 0.5em 1em;
+}
+
+.password-input-container {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 0.9em;
+    right: 0.8em;
+
+    border: none;
+    background-color: transparent;
+
+    & svg {
+        transition: .1s ease;
+    }
+}
+
+.toggle-password:hover svg {
+    fill: var(--text-tertiary);
+}
+
+button[type="submit"] {
+    width: 15em;
+
+    font-size: larger;
+    color: white;
+        
+    font-weight: 500;
+    background-color: var(--text-primary);
+    gap: 0.5em;
+
+    border: none;
+    border-radius: 0.5em;
+
+    padding: 0.6em 1em;
+    margin-top: 1em;
+
+    transition: .2s ease;
+
+    &:hover {
+        background-color: var(--text-tertiary);
+    }
+}
+
+.account-sign-up {
+    width: 100%;
+    text-align: center;
+    margin-top: -1em;
+/* 
+    & a {
+        color: var(--text-primary);
+    } */
+}
+
+.popup {
+    width: 18em;
+
+    font-weight: bold;
+    padding: 0.8em 1em;
+    text-align: center;
+    
+    border-radius: 0.5em;
+}
+
+.popup.danger {
+    background-color: var(--danger-light);
+    color: var(--danger);
+    border: 0.15em solid var(--danger);
+}
+
+.popup.success {
+    background-color: var(--success-light);
+    color: var(--success);
+    border: 0.15em solid var(--success);
+}
+
+.password-message {
+    margin-top: -2em;
+}
+
+.password-message div {
+    font-weight: bold;
+    color: var(--danger);
+    margin: 0.3em 0; 
+
+    display: none;
+    align-items: center;
+
+    & svg {
+        fill: var(--danger);
+    }
+}
+
+.password-message div.is-visible {
+    display: flex;
+}

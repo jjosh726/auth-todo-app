@@ -4,11 +4,12 @@ import { fetchDeleteTask } from "../api/task.api.js";
 import reinit from "../index.js";
 import { controlTaskSidebarState } from "../index/taskbar.js";
 import { parseDate } from "./dates.js";
-import { resetFilters } from "./filter.js";
+import { addFilter, resetFilters } from "./filter.js";
 
 const popup = document.querySelector('.js-popup');
 
 export function displayPopup(errorMsg, success) {
+    if (!popup) return;
     popup.style.display = 'block';
     popup.innerHTML = errorMsg;
 
@@ -243,6 +244,27 @@ export async function editList(editListEl) {
     }
 }
 
+// ------------------ SORT TASK RELATED MODALS-----------------------------
+export function sortTaskModal() {
+    openModal('sort-tasks');
+}
+
+export function sortTasks() {
+    closeModal('sort-tasks');
+
+    const type = document.querySelector('input[name="sort"]:checked').value;
+    let reverse = document.querySelector('input[name="order"]:checked').value;
+
+    if (reverse === 'ascending') {
+        reverse = false;
+    } else {
+        reverse = true;
+    }
+
+    const sort = { type, reverse };
+    addFilter('sort', sort);
+    reinit();
+}
 // ------------------ GENERAL MODAL FUNCTIONS -----------------------------
 
 function openModal(mode) {
@@ -265,6 +287,10 @@ function openModal(mode) {
         
         case 'edit-list':
             document.querySelector('.js-edit-list-modal').style.display = 'block';
+            break;
+        
+        case 'sort-tasks':
+            document.querySelector('.js-sort-task-modal').style.display = 'block';
             break;
     }
     

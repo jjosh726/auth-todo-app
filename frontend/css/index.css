@@ -190,7 +190,7 @@ section.is-closed article {
     gap: 1em;
 }
 
-.add-new, .filter {
+.add-new, .sort {
     display: flex;
     gap: 0.2em;
     align-items: center;
@@ -220,7 +220,7 @@ section.is-closed article {
     }
 }
 
-.add-new:hover, .filter:hover, dialog button:hover {
+.add-new:hover, .sort:hover, dialog button:hover {
     background-color: var(--grey-2);
     
     & div {
@@ -961,4 +961,14 @@ dialog div:has(input) {
         padding: 0.2em 0.7em;
         border-radius: 0.3em;
     }
+}
+
+.sort-filter-text {
+    display: none;
+    font-weight: bold;
+    font-size: larger;
+}
+
+.sort-filter-text.is-visible {
+    display: flex;
 }

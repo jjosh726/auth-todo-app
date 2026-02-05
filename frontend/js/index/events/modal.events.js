@@ -1,9 +1,11 @@
-import { closeModal, createList, deleteList, deleteTask, editList } from "../../utils/popup.js";
+import { closeModal, createList, deleteList, deleteTask, editList, sortTasks } from "../../utils/popup.js";
 
 // MODAL DOM EVENTS
 const deleteTaskBtn = document.querySelector('.js-delete-task-modal');
 const deleteListBtn = document.querySelector('.js-delete-list-modal-button');
 const editListBtn = document.querySelector('.js-edit-list-modal-button');
+const createListBtn = document.querySelector('.js-create-list-modal-button');
+const sortTasksBtn = document.querySelector('.js-sort-tasks-modal-button')
 
 deleteTaskBtn.addEventListener('click', () => {
     deleteTask(deleteTaskBtn);
@@ -20,12 +22,18 @@ editListBtn.addEventListener('click', (e) => {
     editList(editListBtn);
 });
 
+
+createListBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+
+    createList();
+});
+
+sortTasksBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    
+    sortTasks();
+})
+
 document.querySelectorAll('.js-cancel-delete-modal')
-    .forEach(button => button.addEventListener('click', closeModal))
-
-document.querySelector('.js-create-list')
-    .addEventListener('click', (e) => {
-        e.preventDefault();
-
-        createList();
-    });
+    .forEach(button => button.addEventListener('click', closeModal));

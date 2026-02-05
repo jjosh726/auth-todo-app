@@ -115,10 +115,13 @@
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z"/></svg>
                         <div>Add new</div>
                     </button>
-                    <button class="filter">
+                    <button class="sort js-sort">
                         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M440-160q-17 0-28.5-11.5T400-200v-240L168-736q-15-20-4.5-42t36.5-22h560q26 0 36.5 22t-4.5 42L560-440v240q0 17-11.5 28.5T520-160h-80Zm40-308 198-252H282l198 252Zm0 0Z"/></svg>
-                        <div>Filter</div>
+                        <div>Sort</div>
                     </button>
+                    <div class="sort-filter-text js-sort-filter-text">
+                        Sorting by: ...
+                    </div>
                 </div>
                 <div class="tasks js-tasks">
                     
@@ -230,7 +233,7 @@
                     </div>
                     <br>
                     <div class="modal-buttons">
-                        <button class="js-create-list" type="submit">Create List</button>
+                        <button class="js-create-list-modal-button" type="submit">Create List</button>
                         <button class="js-cancel-delete-modal" type="button">Cancel</button>
                     </div>
                 </form>
@@ -264,6 +267,38 @@
                     <br>
                     <div class="modal-buttons">
                         <button class="js-edit-list-modal-button" type="submit">Edit List</button>
+                        <button class="js-cancel-delete-modal" type="button">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="js-sort-task-modal">
+                <form action="">
+                    <h1>Sort Tasks</h1>
+
+                    <h3>Sort By:</h3>
+                    <input type="radio" name="sort" id="dateCreated" value="dateCreated" checked>
+                    <label for="dateCreated">Date Created</label><br>
+
+                    <input type="radio" name="sort" id="alphabetical" value="alphabetical">
+                    <label for="alphabetical">Alphabetical</label><br>
+                    
+                    <input type="radio" name="sort" id="dueDate" value="dueDate">
+                    <label for="dueDate">Due Date</label><br>
+                    
+
+                    <br>
+                    <h3>Order:</h3>
+                    <input type="radio" name="order" id="ascending" value="ascending" checked>
+                    <label for="ascending">Ascending</label><br>
+                    
+                    <input type="radio" name="order" id="descending" value="descending">
+                    <label for="descending">Descending</label><br>
+
+                    <br>
+
+                    <div class="modal-buttons">
+                        <button class="js-sort-tasks-modal-button" type="submit">Sort Tasks</button>
                         <button class="js-cancel-delete-modal" type="button">Cancel</button>
                     </div>
                 </form>

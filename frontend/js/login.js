@@ -1,8 +1,6 @@
 const passwordInput = document.querySelector('.js-password-input');
 const emailInput = document.querySelector('.js-email-input');
 
-const popup = document.querySelector('.js-popup');
-
 const togglePasswordButton = document.querySelector('.js-toggle-password');
 
 togglePasswordButton.addEventListener('click', () => {
@@ -58,7 +56,15 @@ document.querySelector('form').addEventListener('submit', (e) => {
         })
 })
 
-function displayPopup(errorMsg, success) {
+function resetForm() {
+    passwordInput.value = '';
+    emailInput.value = '';
+}
+
+const popup = document.querySelector('.js-popup');
+
+export function displayPopup(errorMsg, success) {
+    if (!popup) return;
     popup.style.display = 'block';
     popup.innerHTML = errorMsg;
 
@@ -69,9 +75,8 @@ function displayPopup(errorMsg, success) {
         popup.classList.add('danger');
         popup.classList.remove('success');
     }
-}
 
-function resetForm() {
-    passwordInput.value = '';
-    emailInput.value = '';
+    setTimeout(() => {
+        popup.style.display = 'none';
+    }, 2000);
 }

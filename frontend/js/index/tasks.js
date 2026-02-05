@@ -27,6 +27,24 @@ export async function renderMain(lists, tasks) {
         mainTitle = 'all';
     }
 
+    if (filters.sort) {
+        let sortText = filters.sort.type;
+        
+        sortText = sortText.replace(/([a-z])([A-Z])/g, '$1 $2');
+        sortText = sortText.charAt(0).toLocaleUpperCase() + sortText.slice(1);
+
+        if (filters.sort.reverse) {
+            sortText += ' Descending';
+        } else {
+            sortText += ' Ascending';
+        }
+
+        document.querySelector('.js-sort-filter-text').classList.add('is-visible');
+        document.querySelector('.js-sort-filter-text').innerHTML = 'Sorting by: ' + sortText; 
+    } else {
+        document.querySelector('.js-sort-filter-text').classList.remove('is-visible');
+    }
+
     document.querySelector('.js-title').innerHTML = `
         ${mainTitle.charAt(0).toLocaleUpperCase() + mainTitle.slice(1)}
         <div class="num">${tasks.length}</div>

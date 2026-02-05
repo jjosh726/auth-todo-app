@@ -1,3 +1,4 @@
+import { sortTaskModal } from "../../utils/popup.js";
 import { controlTaskSidebarState, resetTaskbarForm } from "../taskbar.js";
 
 const taskLayout = document.querySelector('.js-task-layout');
@@ -10,3 +11,6 @@ document.querySelector('.js-add-new-task')
         if (taskLayout.classList.contains('is-closed')) controlTaskSidebarState();
         resetTaskbarForm();
     });
+
+document.querySelector('.js-sort')
+    .addEventListener('click', sortTaskModal);
