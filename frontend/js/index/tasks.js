@@ -1,5 +1,5 @@
 import { fetchSubtask, fetchUpdateSubtask } from "../api/subtask.api.js";
-import { fetchTask, fetchUpdateTask, fetchUpdateTaskWithSubtasks } from "../api/task.api.js";
+import { fetchTask, fetchUpdateTask } from "../api/task.api.js";
 import { EMPTY_TASKS_SUGGESTIONS } from "../config/constants.js";
 import reinit from "../index.js";
 import { parseDate } from "../utils/dates.js";
@@ -209,81 +209,126 @@ export async function renderMain(lists, tasks) {
         })
 }
 
+const taskLocks = new Set();
+
 async function updateTaskCompletion(taskId, completed) {
+    if (taskLocks.has(taskId)) return;
+    taskLocks.add(taskId);
+
     try {
-        const { task } = await fetchUpdateTaskWithSubtasks(taskId, { completed });
+        const { task } = await fetchUpdateTask(taskId, { completed });
     
-        let fetchQueries = [];
+        // let fetchQueries = [];
     
-        // update all subtasks when task is completed
-        if (task.subtasks && completed) {
-            task.subtasks.forEach(subtask => {
+        // // update all subtasks when task is completed
+        // if (task.subtasks && completed) {
+        //     task.subtasks.forEach(subtask => {
     
-                if (!subtask.completed)
-                    fetchQueries.push(() => {
-                        fetchUpdateSubtask(taskId, subtask._id, { completed : true });
-                    });
+        //         if (!subtask.completed)
+        //             fetchQueries.push(() => {
+        //                 fetchUpdateSubtask(taskId, subtask._id, { completed : true });
+        //             });
     
-            })
-        }
+        //     })
+        // }
     
-        if (fetchQueries) {
-            await Promise.all(fetchQueries.map(fn => fn()));
-            reinit();
+        // if (fetchQueries) {
+        //     await Promise.all(fetchQueries.map(fn => fn()));
+        //     reinit();
+        // }
+
+        // // if taskbar is open and all subtasks are updated, rerender the entire taskbar
+        // if (!taskLayout.classList.contains('is-closed') && fetchQueries.length > 0) {
+        //     renderTaskbar(task);
+        // } 
+
+        if (task.subtasks?.length) {
+            await Promise.all(
+                task.subtasks.map(subtask => 
+                    fetchUpdateSubtask(taskId, subtask._id, {
+                        completed
+                    })
+                )
+            )
         }
 
-        // if taskbar is open and all subtasks are updated, rerender the entire taskbar
-        if (!taskLayout.classList.contains('is-closed') && fetchQueries.length > 0) {
-            const taskInfo = await fetchTask(taskId);
-            
-            renderTaskbar(taskInfo.task);
-        } 
+        reinit();
+
+        if (!taskLayout.classList.contains('is-closed')) {
+            const fresh = await fetchTask(taskId);
+            renderTaskbar(fresh.task);
+        }
 
     } catch (error) {
         displayPopup(error.message, false);
+    } finally {
+        taskLocks.delete(taskId);
     }
 }
 
 async function updateSubtaskCompletion(taskId, subtaskId, completed) {
+    if (taskLocks.has(taskId)) return;
+    taskLocks.add(taskId);
+
     try {
         await fetchUpdateSubtask(taskId, subtaskId, { completed });
 
         // if taskbar is open, update taskbar completion
-        const sidebarSubtaskEl = document.querySelector(`.js-sidebar-subtask-${subtaskId}`);
+        // const sidebarSubtaskEl = document.querySelector(`.js-sidebar-subtask-${subtaskId}`);
 
-        if (!taskLayout.classList.contains('is-closed') && sidebarSubtaskEl)
-            sidebarSubtaskEl.classList.toggle('completed');
+        const { task } = await fetchTask(taskId);
 
-        // if all subtasks complete, complete the main task
-        const subtaskElements = document.querySelectorAll(`.js-task-${taskId} .js-subtask`);
+        // if (!taskLayout.classList.contains('is-closed') && sidebarSubtaskEl)
+        //     sidebarSubtaskEl.classList.toggle('completed');
+
+        // // if all subtasks complete, complete the main task
+        // const subtaskElements = document.querySelectorAll(`.js-task-${taskId} .js-subtask`);
         
-        if (subtaskElements) {
-            let isAllSubtasksComplete = true;
+        // if (subtaskElements) {
+        //     let isAllSubtasksComplete = true;
 
-            subtaskElements.forEach(subtask => {
-                const completed = subtask.querySelector('.js-complete-subtask').checked;
+        //     subtaskElements.forEach(subtask => {
+        //         const completed = subtask.querySelector('.js-complete-subtask').checked;
 
-                if (!completed) isAllSubtasksComplete = false;
-            });
+        //         if (!completed) isAllSubtasksComplete = false;
+        //     });
             
-            const taskCheckbox = document.querySelector(`.js-task-${taskId} .js-complete-task`);
+        //     const taskCheckbox = document.querySelector(`.js-task-${taskId} .js-complete-task`);
 
-            if (isAllSubtasksComplete) {
+        //     if (isAllSubtasksComplete) {
 
-                taskCheckbox.checked = true;
-                await fetchUpdateTask(taskId, { completed : true});
+        //         taskCheckbox.checked = true;
+        //         await fetchUpdateTask(taskId, { completed : true});
 
-            } else if (taskCheckbox.checked) {
-                // if not all subtasks complete but task checkbox is check
-                // uncheck and update
-                taskCheckbox.checked = false;
-                await fetchUpdateTask(taskId, { completed : false});
-            }
+        //     } else if (taskCheckbox.checked) {
+        //         // if not all subtasks complete but task checkbox is check
+        //         // uncheck and update
+        //         taskCheckbox.checked = false;
+        //         await fetchUpdateTask(taskId, { completed : false});
+        //     }
+        // }
+
+        const isAllSubtasksComplete =
+            task.subtasks.length > 0 &&
+            task.subtasks.every(subtask => subtask.completed);
+
+        if (task.completed !== isAllSubtasksComplete) {
+            await fetchUpdateTask(taskId, {
+                completed : isAllSubtasksComplete
+            });
+        };
+
+        reinit();
+                
+        if (!taskLayout.classList.contains('is-closed')) {
+            const fresh = await fetchTask(taskId);
+            renderTaskbar(fresh.task);
         }
-
 
     } catch (error) {
         displayPopup(error.message, false);
+    } finally {
+        taskLocks.delete(taskId);
     }
 }
 

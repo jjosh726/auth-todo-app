@@ -63,7 +63,6 @@ const getTaskById = async (req, res, next) => {
 
 const createTask = async (req, res, next) => {
     try {
-        console.log(req.body);
         const { title, description, dueDate, listId} = req.body;
 
         const userId = req.userId;
