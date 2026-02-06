@@ -972,3 +972,23 @@ dialog div:has(input) {
 .sort-filter-text.is-visible {
     display: flex;
 }
+
+.user-link-hover {
+    display: none;
+
+    position: absolute;
+    top: 2em;
+    right: 0;
+    padding: 1em;
+
+    background-color: var(--grey-1);
+    border: 0.15em solid var(--grey-2);
+}
+/* 
+.user-link-hover a {
+    padding: 1em;
+} */
+
+.user-link-hover.is-visible {
+    display: block;
+}

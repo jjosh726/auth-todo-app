@@ -84,8 +84,13 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res, next) => {
     try {
-        res.clearCookie("access_token");
-        res.clearCookie("refresh_token");
+        // clearcookie options must match the original cookie options
+        res.clearCookie("access_token", { path : "/" });
+        res.clearCookie("refresh_token", { path : "/" });
+
+        res.status(200).json({ 
+            message: "Logged out." 
+        });
     } catch (err) {
         next(err);
     }

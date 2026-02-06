@@ -7,6 +7,13 @@ import { renderMain } from "./index/tasks.js";
 import { filterUserTasks } from "./utils/filter.js";
 import { displayPopup } from "./utils/popup.js";
 
+// prevent back caching
+window.addEventListener('pageshow', (event) => {
+    if (event.persisted) {
+        window.location.reload();
+    }
+});
+
 // ---------------------INITIALIZATION--------------------------------
 async function init() {
     try {
@@ -26,6 +33,12 @@ async function init() {
         renderMain(lists, tasks)
 
     } catch (error) {
+        if (error.status === 401 ) {
+            // replace prevents back-navigation
+            window.location.replace('/login.html');
+            return;
+        }
+
         displayPopup(error.message, false);
     }
 }
