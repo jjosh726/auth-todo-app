@@ -32,3 +32,34 @@ function updateUserInfo(user) {
 
     document.title = `${user.username} - TaskTon`
 }
+
+
+// 3. Start observing
+document.querySelectorAll('img.lazy-load')
+    .forEach(image => {
+        const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                console.log('Image has entered the screen!');
+
+                const className = parseClassName(entry.target.className);
+                document.querySelector(className).classList.add('img-appear');
+                
+                // Stop observing after it enters
+                observer.unobserve(entry.target); 
+            }
+        });
+        }, {
+            threshold: 0.8 // Trigger when 10% of the image is visible
+        });
+
+        observer.observe(image);
+    })
+
+function parseClassName(className) {
+    return className
+        .split(' ')
+        .map(t => "." + t)
+        .join('');
+    
+}

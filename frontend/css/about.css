@@ -123,6 +123,12 @@ aside, section, article {
         font-style: italic;
         font-size: 5em;
     }
+
+    & img {
+        border-radius: 1em;
+        box-shadow: 0 0 2em #0000002b;
+    }
+
 }
 
 .content {
@@ -151,15 +157,12 @@ aside, section, article {
 
 .content img {
     position: absolute;
+    opacity: 0;
 }
 
 
-aside {
-    & img {
-        border-radius: 1em;
-        box-shadow: 0 0 2em #0000002b;
-    }
 
+aside {
     & .img-1 {
         transform-origin: top right;
         scale: 0.5;
@@ -180,5 +183,74 @@ aside {
         scale: 0.5;
         top: 20%;
         left: 0;
+    }
+}
+
+
+section {
+    & .img-1 {
+        z-index: 2;
+        transform-origin: top right;
+        scale: 0.8;
+        top: 20%;
+        right: 0;
+        
+    }
+
+    & .img-2 {
+        z-index: 3;
+        transform-origin: bottom left;
+        scale: 0.8;
+        bottom: 0;
+        left: 20%;
+    }
+
+    & .img-3 {
+        z-index: 1;
+        transform-origin: top left;
+        scale: 0.8;
+        top: 0;
+        left: 0;
+    }
+}
+
+article {
+    & .img-1 {
+        z-index: 2;
+        transform-origin: top right;
+        scale: 0.3;
+        top: 20%;
+        right: 0;
+        
+    }
+
+    & .img-2 {
+        z-index: 3;
+        transform-origin: bottom left;
+        scale: 0.7;
+        bottom: 10%;
+        left: 5%;
+    }
+
+    & .img-3 {
+        z-index: 1;
+        transform-origin: top left;
+        scale: 0.25;
+        top: 0;
+        left: 0;
+    }
+}
+
+.img-appear {
+    animation: hoverUp 1.3s forwards linear(0, 0.618 4.6%, 1.072 9.7%, 1.358 15.3%, 1.446 18.4%, 1.497 21.7%, 1.512 23.9%, 1.514 26.2%, 1.481 31.5%, 1.421 36.4%, 1.174 53.4%, 1.108 59.5%, 1.059 65.7%, 1.028 71.9%, 1.009 78.9%, 1);
+}
+
+@keyframes hoverUp {
+    0% {
+        opacity: 0;
+        transform: translateY(6em);
+    } 100% {
+        opacity: 1;
+        transform: translateY(0em);
     }
 }
