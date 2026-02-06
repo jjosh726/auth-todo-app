@@ -71,6 +71,8 @@ function updateUserInfo(user) {
     loginLink.classList.toggle('is-invisible');
 
     userLink.innerHTML = user.username;
+
+    document.title = `${user.username} - TaskTon`
 }
 
 

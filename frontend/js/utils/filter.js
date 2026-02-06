@@ -77,11 +77,12 @@ function sortTasks(tasks, type, reverse) {
             result.sort((a, b) => {
                 if (a.dueDate && b.dueDate) {
                     return new Date(a.dueDate) - new Date(b.dueDate)
-                } else if (a.dueDate && !b.dueDate) {
-                    return a - b;
-                } else {
-                    return b - a;
                 }
+
+                if (a.dueDate && !b.dueDate) return -1;
+                if (!a.dueDate && b.dueDate) return 1;
+
+                return 0;
             });
             break;
     }

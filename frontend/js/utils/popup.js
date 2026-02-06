@@ -52,9 +52,15 @@ export function renderTaskModal(task) {
 
             <div class="modal-completed">${completed ? "COMPLETED" : "INCOMPLETE"}</div>
         </div>
+        ${description 
+            ? `            
+            <hr>
+            <p>${description}</p>
+            `
+            : "" 
+        }
         <hr>
-        <p>${description}</p>
-        <hr>
+        <div class="modal-subtask-title">${subtasks.length > 0 ? "Subtasks:" : ""}</div>
         <ul class="task-subtasks">
     `;
 
@@ -264,6 +270,15 @@ export function sortTasks() {
     const sort = { type, reverse };
     addFilter('sort', sort);
     reinit();
+    resetSortForm();
+}
+
+function resetSortForm() {
+    document.querySelector('input[name="sort"]:checked').checked = false;
+    document.querySelector('input[name="order"]:checked').checked = false;
+
+    document.querySelector('#dateCreated').checked = true;
+    document.querySelector('#ascending').checked = true;
 }
 // ------------------ GENERAL MODAL FUNCTIONS -----------------------------
 

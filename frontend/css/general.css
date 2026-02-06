@@ -88,9 +88,64 @@ nav > div {
     }
 }
 
+.user-link-hover {
+    display: none;
 
+    z-index: 999;
+
+    position: absolute;
+    top: 2em;
+    right: 0;
+    padding: 1em;
+
+    background-color: var(--grey-1);
+    border: 0.15em solid var(--grey-2);
+}
+
+.user-link-hover.is-visible {
+    display: block;
+}
+
+
+.nav-right a.is-invisible {
+    display: none;
+}
 
 .main {
     display: flex;
     flex: 1;
+}
+
+.delete-task-modal {
+    font-weight: bold;
+
+    & .task-title {
+        display: flex;
+        gap: 0.5em;
+        margin: 1em;
+    }
+
+    & .modal-completed, & .modal-date {
+        background-color: var(--grey-2);
+        color: var(--text-secondary);
+        padding: 0.5em;
+        border-radius: 0.5em;
+    }
+
+    & .modal-title {
+        font-size: x-large;
+    }
+
+    & hr {
+        border-color: var(--grey-1);
+        margin: 0.5em;
+    }
+
+    & .modal-subtask-title {
+        margin-left: 2em;
+    }
+
+    & ul {
+        margin-left: 3em;
+    }
 }
