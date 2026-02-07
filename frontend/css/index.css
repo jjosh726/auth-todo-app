@@ -968,3 +968,128 @@ dialog div:has(input) {
 .sort-filter-text.is-visible {
     display: flex;
 }
+
+@media (max-width: 1200px) {
+  aside {
+    width: 26vw;
+  }
+
+  section {
+    grid-template-columns: 1fr 38em;
+  }
+
+  .task-list,
+  article {
+    height: calc(100vh - 4em); /* nav height safety */
+  }
+}
+
+@media (max-width: 900px) {
+  /* Sidebar becomes horizontal or collapsible later */
+  aside {
+    width: 90%;
+    height: auto;
+    margin: 0.5em;
+  }
+
+  section {
+    grid-template-columns: 1fr;
+    position: relative;
+    height: 100%;
+  }
+
+  /* Task list stays scrollable */
+  .task-list {
+    height: calc(100vh - 4em); /* nav */
+    overflow-y: auto;
+  }
+
+  /* Task editor becomes a fixed overlay */
+  article {
+    position: fixed;
+    top: 3.5em; /* nav height */
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: auto;
+    width: 100%;
+
+    z-index: 50;
+    border-radius: 0;
+  }
+
+  section.is-closed article {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Hide sidebar completely */
+  aside {
+    display: none;
+  }
+
+  section {
+    padding: 0.5em;
+  }
+
+  .tasks-actions {
+    flex-wrap: wrap;
+    gap: 0.5em;
+  }
+
+  .add-new,
+  .sort {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .task,
+  .subtask {
+    padding: 0.8em;
+  }
+
+  /* Editor layout */
+  article {
+    padding: 1em;
+  }
+
+  .task-actions {
+    flex-direction: column;
+  }
+
+  .task-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 900px) {
+  article {
+    overflow-y: auto;
+  }
+
+  .task-list {
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 600px) {
+  .close-task-button {
+    padding: 0.5em;
+  }
+
+  .close-task-button svg {
+    width: 1.8em;
+    height: 1.8em;
+  }
+}
+
+@media (max-width: 900px) {
+  section:not(.is-closed) .task-list {
+    pointer-events: none;
+    filter: blur(1px);
+  }
+}

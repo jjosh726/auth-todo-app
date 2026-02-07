@@ -80,25 +80,3 @@ button[type="submit"] {
         color: var(--text-primary);
     } */
 }
-
-.popup {
-    width: 18em;
-
-    font-weight: bold;
-    padding: 0.8em 1em;
-    text-align: center;
-    
-    border-radius: 0.5em;
-}
-
-.popup.danger {
-    background-color: var(--danger-light);
-    color: var(--danger);
-    border: 0.15em solid var(--danger);
-}
-
-.popup.success {
-    background-color: var(--success-light);
-    color: var(--success);
-    border: 0.15em solid var(--success);
-}

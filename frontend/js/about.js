@@ -30,7 +30,7 @@ function updateUserInfo(user) {
 
     userLink.innerHTML = user.username;
 
-    document.title = `${user.username} - TaskTon`
+    document.title = `${user.username} - About TaskTon`
 }
 
 
@@ -40,8 +40,6 @@ document.querySelectorAll('img.lazy-load')
         const observer = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                console.log('Image has entered the screen!');
-
                 const className = parseClassName(entry.target.className);
                 document.querySelector(className).classList.add('img-appear');
                 

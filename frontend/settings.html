@@ -6,8 +6,8 @@
     <title>Settings</title>
 
     <link rel="stylesheet" href="/css/colors.css">
-    <link rel="stylesheet" href="/css/index.css">
     <link rel="stylesheet" href="/css/general.css">
+    <link rel="stylesheet" href="/css/settings.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,9 +22,7 @@
             TaskTon
         </div>
         <div class="nav-right">
-            <a href="/index.html">
-                Tasks
-            </a>
+            
             <a href="/login.html" class="login-link js-login-link">
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M480-120v-80h280v-560H480v-80h280q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H480Zm-80-160-55-58 102-102H120v-80h327L345-622l55-58 200 200-200 200Z"/></svg>
                 Login
@@ -35,15 +33,38 @@
             </a>
             <div class="user-link-hover js-user-link-hover">
                 <!-- <a href="">User settings</a> -->
+                 <a href="/index.html">
+                    Tasks
+                </a>
                 <a class="js-logout">logout</a>
             </div>
         </div>
     </nav>
     <div class="main">
+        
+        <form action="">
+            <h1>User Profile</h1>
+            <div>
+                <div class="popup js-popup" style="display: none;">
+                    Email field empty.
+                </div>
+                
+                <div>
+                    <label for="username">Username:</label><br>
+                    <input class="js-username-input" type="text" name="username" id="username" placeholder="Enter your Username">
+                </div>
+    
+                <div>
+                    <label for="email">Email:</label><br>
+                    <input class="js-email-input" type="email" name="email" id="email" placeholder="Enter your Email">
+                </div>
+            </div>
 
+            <button type="submit">Update User Information</button>
+        </form>
     </div>
 
     <script type="module" src="/js/settings.js"></script>
-    <script type="module" src="/js/index/events/navbar.events.js"></script>
+    <!-- <script type="module" src="/js/index/events/navbar.events.js"></script> -->
 </body>
 </html>

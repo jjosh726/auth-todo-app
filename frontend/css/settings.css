@@ -1,0 +1,61 @@
+form {
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2em;
+}
+
+form > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    align-items: center;
+    justify-content: center;
+}
+
+label {
+    font-weight: bold;
+    font-size: large;
+}
+
+input {
+    font-size: larger;
+        
+    font-weight: 500;
+    color: var(--text-tertiary);
+    gap: 0.5em;
+
+    border: 0.15em var(--text-tertiary) solid;
+    border-radius: 0.5em;
+    outline: none;
+    padding: 0.5em 1em;
+}
+
+
+button[type="submit"] {
+    width: 15em;
+
+    font-size: larger;
+    color: white;
+        
+    font-weight: 500;
+    background-color: var(--text-primary);
+    gap: 0.5em;
+
+    border: none;
+    border-radius: 0.5em;
+
+    padding: 0.6em 1em;
+    margin-top: 1em;
+
+    transition: .2s ease;
+
+    &:hover {
+        background-color: var(--text-tertiary);
+    }
+}

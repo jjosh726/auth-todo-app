@@ -38,6 +38,27 @@ export async function registerUser(body) {
     return data;
 }
 
+export async function updateUser(body) {
+    const response = await fetch('/api/v1/auth/update',
+        {
+            method : "PUT",
+            credentials : "include",
+            headers : {
+                "Content-Type" : "application/json"
+            },
+            body : JSON.stringify(body)
+        }
+    )
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Failed to update user');
+    }
+
+    return data;
+}
+
 export async function logout() {
     const response = await fetch('/api/v1/auth/logout', {
         method : "POST",

@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 import { UserNotFoundError } from "../errors/NotFound.js";
 import { AuthenticationError } from "../errors/AuthenticationError.js";
+import { EmptyRequestError } from "../errors/EmptyError.js";
 
 const register = async (req, res, next) => {
     try {
@@ -120,10 +121,48 @@ const me = async (req, res, next) => {
     }
 }
 
+const updateUser = async (req, res, next) => {
+    try {
+        const userId = req.userId;
+        
+        const allowedUpdates = ["username", "email"];
+        const updates = {};
+
+        for (const key of allowedUpdates) {
+            if (req.body[key] !== undefined) {
+                updates[key] = req.body[key];
+            }
+        }
+
+        if (Object.keys(updates).length === 0) throw new EmptyRequestError();
+
+        const updatedUser = await User.findByIdAndUpdate(userId, updates, {
+            new : true
+        });
+
+        if (!updatedUser) throw new UserNotFoundError();
+
+        return res.status(200).json({
+            message : "User updated successfully",
+            user : {
+                id : updatedUser._id,
+                username : updatedUser.username,
+                email : updatedUser.email,
+                createdAt : updatedUser.createdAt,
+                updatedAt : updatedUser.updatedAt
+            }
+        })
+        
+    } catch (err) {
+        next(err);
+    }
+}
+
 
 export {
     register,
     login,
     logout,
-    me
+    me,
+    updateUser
 }

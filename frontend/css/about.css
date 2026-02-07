@@ -254,3 +254,45 @@ article {
         transform: translateY(0em);
     }
 }
+
+@media screen and (max-width: 1200px) and (min-width: 500px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .left, .right {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .content {
+        flex-direction: column;
+    }
+
+    .left, .right {
+        width: 30em;
+    }
+    
+    article, aside, section {
+        width: 90%;
+
+        & h1 {
+            font-size: 3em;
+        }
+
+        & .content h1 {
+            font-size: 2em !important;
+        }
+
+        & p {
+            width: 95%;
+            font-size: 1em !important;
+        }
+
+        & .left:has(img), & .right:has(img)  {
+            transform-origin: top left;
+            scale: 0.8;
+        }
+    }
+}
